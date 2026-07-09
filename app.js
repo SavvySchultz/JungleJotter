@@ -1,12 +1,14 @@
-let articles = JSON.parse(localStorage.getItem("jungleJotter")) || [
+let articles = JSON.parse(
+    localStorage.getItem("jungleJotter")
+) || [
 
     {
         title: "Reset MFA",
         category: "Microsoft 365",
         steps: [
-            "Open Microsoft Entra Admin Center",
+            "Open Entra Admin Center",
             "Select Users",
-            "Choose User",
+            "Choose the User",
             "Require Re-register MFA",
             "Have user sign in again"
         ]
@@ -17,65 +19,61 @@ let articles = JSON.parse(localStorage.getItem("jungleJotter")) || [
         category: "Exchange Online",
         steps: [
             "Open Exchange Admin Center",
-            "Recipients",
-            "Shared Mailboxes",
-            "Add Shared Mailbox",
-            "Assign permissions"
+            "Navigate to Recipients",
+            "Select Shared Mailboxes",
+            "Click Add Shared Mailbox",
+            "Assign Permissions"
         ]
     },
 
     {
-        title: "Map Network Printer",
-        category: "Printers",
+        title: "VPN Troubleshooting",
+        category: "Networking",
         steps: [
-            "Open Print Management",
-            "Add Printer",
-            "Enter printer path",
-            "Install drivers",
-            "Print test page"
+            "Verify Internet Access",
+            "Confirm VPN Credentials",
+            "Test VPN Client",
+            "Reinstall VPN if needed"
         ]
     }
-
 ];
 
-function saveArticles() {
-
+function saveData() {
     localStorage.setItem(
         "jungleJotter",
         JSON.stringify(articles)
     );
 }
 
-function renderArticles(list) {
+function renderArticles(data) {
 
     const results =
         document.getElementById("results");
 
     results.innerHTML = "";
 
-    if (list.length === 0) {
+    if (data.length === 0) {
 
-        results.innerHTML =
-        `
-        <div class="card">
-            <h3>No discoveries found.</h3>
-        </div>
+        results.innerHTML = `
+            <div class="empty">
+                No discoveries found in this part of the jungle.
+            </div>
         `;
 
         return;
     }
 
-    list.forEach(article => {
+    data.forEach(article => {
 
-        const card =
+        const div =
             document.createElement("div");
 
-        card.className = "card";
+        div.classList.add("card");
 
-        card.innerHTML = `
+        div.innerHTML = `
             <h3>🌴 ${article.title}</h3>
 
-            <div class="category">
+            <div class="badge">
                 ${article.category}
             </div>
 
@@ -86,7 +84,7 @@ function renderArticles(list) {
             </ul>
         `;
 
-        results.appendChild(card);
+        results.appendChild(div);
 
     });
 
@@ -96,40 +94,31 @@ function addArticle() {
 
     const title =
         document.getElementById("title")
-        .value
-        .trim();
+        .value.trim();
 
     const category =
         document.getElementById("category")
-        .value
-        .trim();
+        .value.trim();
 
-    const stepsText =
+    const steps =
         document.getElementById("steps")
-        .value
-        .trim();
+        .value.trim();
 
-    if (!title || !category || !stepsText) {
+    if (!title || !category || !steps) {
 
-        alert(
-            "Please complete all fields."
-        );
-
+        alert("Please complete all fields.");
         return;
     }
 
-    const steps =
-        stepsText
-            .split("\n")
-            .filter(step => step.trim() !== "");
-
     articles.unshift({
-        title,
-        category,
-        steps
+        title: title,
+        category: category,
+        steps: steps
+            .split("\n")
+            .filter(step => step.trim() !== "")
     });
 
-    saveArticles();
+    saveData();
 
     renderArticles(articles);
 
@@ -142,31 +131,34 @@ function addArticle() {
 
 document
     .getElementById("searchInput")
-    .addEventListener("input", function() {
+    .addEventListener("input", function () {
 
-        const term =
+        const search =
             this.value.toLowerCase();
 
         const filtered =
-            articles.filter(article =>
+            articles.filter(article => {
 
-                article.title
-                    .toLowerCase()
-                    .includes(term)
+                return (
+                    article.title
+                        .toLowerCase()
+                        .includes(search)
 
-                ||
+                    ||
 
-                article.category
-                    .toLowerCase()
-                    .includes(term)
+                    article.category
+                        .toLowerCase()
+                        .includes(search)
 
-                ||
+                    ||
 
-                article.steps
-                    .join(" ")
-                    .toLowerCase()
-                    .includes(term)
-            );
+                    article.steps
+                        .join(" ")
+                        .toLowerCase()
+                        .includes(search)
+                );
+
+            });
 
         renderArticles(filtered);
 
