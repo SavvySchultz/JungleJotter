@@ -1,74 +1,195 @@
-let notes = JSON.parse(localStorage.getItem("jungleNotes")) || [];
+let discoveries =
+JSON.parse(
+localStorage.getItem("discoveries")
+) || [];
 
-function displayNotes(list = notes) {
+function cleanNotes() {
 
-    let container =
-        document.getElementById("notesContainer");
+    let notes =
+    document.getElementById("notes").value;
 
-    container.innerHTML = "";
+    let cleaned =
+    notes
+    .split(".")
+    .filter(x => x.trim() !== "")
+    .map((step,index)=>
+        `Step ${index + 1}: ${step.trim()}`
+    )
+    .join("<br>");
 
-    list.forEach(note => {
+    document.getElementById(
+        "cleanedArea"
+    ).innerHTML =
 
-        container.innerHTML += `
-            <div class="note-card">
-                <h3>${note.title}</h3>
-                <div class="category">
-                    ${note.category}
-                </div>
-                <p>${note.content}</p>
+    `
+    <div class='clean-box'>
+        <h3>Clean Procedure</h3>
+        ${cleaned}
+    </div>
+    `;
+}
+
+function saveDiscovery() {
+
+    let title =
+    document.getElementById("title").value;
+
+    let category =
+    document.getElementById("category").value;
+
+    let tags =
+    document.getElementById("tags").value;
+
+    let notes =
+    document.getElementById("notes").value;
+
+    let file =
+    document.getElementById(
+        "attachment"
+    ).files[0];
+
+    let fileName = "";
+
+    if(file){
+        fileName = file.name;
+    }
+
+    discoveries.push({
+
+        title,
+        category,
+        tags,
+        notes,
+        fileName
+
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    alert("Discovery Saved");
+
+    location.reload();
+}
+
+function loadKnowledge() {
+
+    let results =
+    document.getElementById("results");
+
+    if(!results) return;
+
+    displayDiscoveries(discoveries);
+
+    document
+        .getElementById("searchBox")
+        .addEventListener("input",
+        filterSearch);
+
+    document
+        .getElementById(
+            "filterCategory"
+        )
+        .addEventListener(
+            "change",
+            filterSearch
+        );
+}
+
+function filterSearch() {
+
+    let search =
+    document.getElementById(
+        "searchBox"
+    ).value.toLowerCase();
+
+    let category =
+    document.getElementById(
+        "filterCategory"
+    ).value;
+
+    let filtered =
+    discoveries.filter(item =>
+
+        (
+            item.title
+            .toLowerCase()
+            .includes(search)
+
+            ||
+
+            item.notes
+            .toLowerCase()
+            .includes(search)
+
+            ||
+
+            item.tags
+            .toLowerCase()
+            .includes(search)
+
+        )
+
+        &&
+
+        (
+            category === ""
+            ||
+
+            item.category === category
+        )
+
+    );
+
+    displayDiscoveries(filtered);
+}
+
+function displayDiscoveries(list) {
+
+    let results =
+    document.getElementById(
+        "results"
+    );
+
+    results.innerHTML = "";
+
+    list.forEach(item => {
+
+        results.innerHTML +=
+
+        `
+        <div class="discovery-card">
+
+            <h3>${item.title}</h3>
+
+            <div class="category">
+                ${item.category}
             </div>
+
+            <p>
+                <b>Tags:</b>
+                ${item.tags}
+            </p>
+
+            <hr><br>
+
+            <p>${item.notes}</p>
+
+            <br>
+
+            <b>
+            Attachment:
+            </b>
+
+            ${item.fileName
+                ? item.fileName
+                : "None"}
+
+        </div>
         `;
     });
 }
 
-function saveNote() {
-
-    let title =
-        document.getElementById("title").value;
-
-    let category =
-        document.getElementById("category").value;
-
-    let content =
-        document.getElementById("notes").value;
-
-    if(!title || !content){
-        alert("Please complete all fields.");
-        return;
-    }
-
-    notes.push({
-        title,
-        category,
-        content
-    });
-
-    localStorage.setItem(
-        "jungleNotes",
-        JSON.stringify(notes)
-    );
-
-    displayNotes();
-
-    document.getElementById("title").value = "";
-    document.getElementById("notes").value = "";
-}
-
-document
-.getElementById("searchBox")
-.addEventListener("input", function(){
-
-    let value =
-        this.value.toLowerCase();
-
-    let filtered =
-        notes.filter(n =>
-            n.title.toLowerCase().includes(value) ||
-            n.content.toLowerCase().includes(value) ||
-            n.category.toLowerCase().includes(value)
-        );
-
-    displayNotes(filtered);
-});
-
-displayNotes();
+loadKnowledge();
