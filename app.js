@@ -1,141 +1,74 @@
-let articles = JSON.parse(
-    localStorage.getItem("jungleJotter")
-) || [
+let notes = JSON.parse(localStorage.getItem("jungleNotes")) || [];
 
-    {
-        title: "Reset MFA",
-        category: "Microsoft 365",
-        steps: [
-            "Open Entra Admin Center",
-            "Select Users",
-            "Select User",
-            "Require Re-register MFA",
-            "Have user sign in again"
-        ]
-    },
+function displayNotes(list = notes) {
 
-    {
-        title: "Create Shared Mailbox",
-        category: "Exchange",
-        steps: [
-            "Open Exchange Admin Center",
-            "Navigate to Recipients",
-            "Select Shared Mailboxes",
-            "Create Mailbox",
-            "Assign Permissions"
-        ]
-    },
+    let container =
+        document.getElementById("notesContainer");
 
-    {
-        title: "Map Network Printer",
-        category: "Printer",
-        steps: [
-            "Open Print Management",
-            "Add Printer",
-            "Install Drivers",
-            "Print Test Page"
-        ]
-    }
-];
+    container.innerHTML = "";
 
-function saveData() {
-    localStorage.setItem(
-        "jungleJotter",
-        JSON.stringify(articles)
-    );
-}
+    list.forEach(note => {
 
-function renderArticles(list) {
-
-    const results =
-        document.getElementById("results");
-
-    results.innerHTML = "";
-
-    if (list.length === 0) {
-
-        results.innerHTML = `
-            <div class="no-results">
-                No discoveries found in this part of the jungle.
+        container.innerHTML += `
+            <div class="note-card">
+                <h3>${note.title}</h3>
+                <div class="category">
+                    ${note.category}
+                </div>
+                <p>${note.content}</p>
             </div>
         `;
-
-        return;
-    }
-
-    list.forEach(article => {
-
-        const card = document.createElement("div");
-
-        card.className = "card";
-
-        card.innerHTML = `
-            <h3>${article.title}</h3>
-
-            <div class="badge">
-                ${article.category}
-            </div>
-
-            <ul>
-                ${article.steps.map(
-                    step => `<li>${step}</li>`
-                ).join("")}
-            </ul>
-        `;
-
-        results.appendChild(card);
     });
 }
 
-function addArticle() {
+function saveNote() {
 
-    const title =
-        document.getElementById("title").value.trim();
+    let title =
+        document.getElementById("title").value;
 
-    const category =
-        document.getElementById("category").value.trim();
+    let category =
+        document.getElementById("category").value;
 
-    const stepsText =
-        document.getElementById("steps").value.trim();
+    let content =
+        document.getElementById("notes").value;
 
-    if (!title || !category || !stepsText) {
+    if(!title || !content){
         alert("Please complete all fields.");
         return;
     }
 
-    articles.unshift({
+    notes.push({
         title,
         category,
-        steps: stepsText
-            .split("\n")
-            .filter(step => step.trim() !== "")
+        content
     });
 
-    saveData();
+    localStorage.setItem(
+        "jungleNotes",
+        JSON.stringify(notes)
+    );
 
-    renderArticles(articles);
+    displayNotes();
 
     document.getElementById("title").value = "";
-    document.getElementById("category").value = "";
-    document.getElementById("steps").value = "";
+    document.getElementById("notes").value = "";
 }
 
 document
-    .getElementById("searchInput")
-    .addEventListener("input", function() {
+.getElementById("searchBox")
+.addEventListener("input", function(){
 
-        const search =
-            this.value.toLowerCase();
+    let value =
+        this.value.toLowerCase();
 
-        const filtered =
-            articles.filter(article =>
+    let filtered =
+        notes.filter(n =>
+            n.title.toLowerCase().includes(value) ||
+            n.content.toLowerCase().includes(value) ||
+            n.category.toLowerCase().includes(value)
+        );
 
-                article.title.toLowerCase().includes(search) ||
-                article.category.toLowerCase().includes(search) ||
-                article.steps.join(" ").toLowerCase().includes(search)
-            );
+    displayNotes(filtered);
+});
 
-        renderArticles(filtered);
-    });
-
-renderArticles(articles);
+displayNotes();
