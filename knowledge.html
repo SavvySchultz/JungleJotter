@@ -1,50 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Knowledge Base</title>
-<link rel="stylesheet" href="styles.css">
+
+<link rel="stylesheet"
+href="styles.css">
+
 </head>
 
 <body>
 
 <header>
-    <h1>📚 Knowledge Base</h1>
+
+<h1>📚 Knowledge Base</h1>
+
 </header>
 
 <nav>
-    <a href="index.html">Add Discovery</a>
-    <a href="knowledge.html">Knowledge Base</a>
-    <a href="dashboard.html">Dashboard</a>
+
+<a href="index.html">Add Discovery</a>
+
+<a href="knowledge.html">Knowledge Base</a>
+
+<a href="dashboard.html">Dashboard</a>
+
 </nav>
 
 <div class="container">
 
-    <input
-        id="search"
-        placeholder="Search knowledge..."
-        onkeyup="searchKnowledge()">
+<input
+id="search"
+placeholder="Search..."
+onkeyup="searchKnowledge()">
 
-    <select
-        id="filter"
-        onchange="searchKnowledge()">
+<select
+id="filter"
+onchange="searchKnowledge()">
 
-        <option value="">All Categories</option>
-        <option>Microsoft 365</option>
-        <option>Outlook</option>
-        <option>Teams</option>
-        <option>VPN</option>
-        <option>Network</option>
-        <option>Printer</option>
+<option value="">
+All Categories
+</option>
 
-    </select>
+<option>Microsoft 365</option>
+<option>Outlook</option>
+<option>Teams</option>
+<option>VPN</option>
+<option>Network</option>
+<option>Printer</option>
 
-    <div id="results"></div>
+</select>
+
+<div id="results"></div>
 
 </div>
 
 <script src="app.js"></script>
 
 </body>
+
 </html>
