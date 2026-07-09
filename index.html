@@ -5,28 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌴 Jungle Jotter</title>
 
-    <link .css
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <header class="header">
-        <h1>🌴 Jungle Jotter</h1>
-        <p>Your IT Survival Guide Through the Jungle</p>
+    <header>
+        <div class="header-content">
+            <h1>🌴 Jungle Jotter</h1>
+            <p>Your IT Survival Guide Through the Jungle</p>
+        </div>
     </header>
 
-    <div class="container">
+    <main class="container">
 
-        <div class="search-box">
+        <section class="search-section">
+            <h2>🔍 Search the Jungle</h2>
+
             <input
                 type="text"
                 id="searchInput"
-                placeholder="Search MFA, VPN, Printers, Shared Mailboxes..."
+                placeholder="Search MFA, VPN, Printers, New Hire Setup..."
             >
-        </div>
+        </section>
 
-        <div id="results"></div>
+        <section id="results"></section>
 
-        <div class="form-card">
+        <section class="submit-section">
 
             <h2>📝 Add New Discovery</h2>
 
@@ -44,17 +48,17 @@
 
             <textarea
                 id="steps"
-                rows="6"
+                rows="8"
                 placeholder="Enter one step per line..."
             ></textarea>
 
             <button onclick="addArticle()">
-                Save Discovery
+                🌿 Save Discovery
             </button>
 
-        </div>
+        </section>
 
-    </div>
+    </main>
 
     <footer>
         🌴 Jungle Jotter • Built for IT Explorers
