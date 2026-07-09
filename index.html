@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Jungle Jotter</title>
-
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jungle Jotter - Add Discovery</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <header>
@@ -18,8 +15,8 @@
 
 <nav>
     <a href="index.html">Add Discovery</a>
-    knowledge.html
-    ">Dashboard</a>
+    <a href="knowledge.html">Knowledge Base</a>
+    <a href="dashboard.html">Dashboard</a>
 </nav>
 
 <div class="container">
@@ -28,38 +25,29 @@
 
         <h2>Add New Discovery</h2>
 
-        <input
-            id="title"
-            type="text"
-            placeholder="Issue Title">
+        <input id="title" type="text" placeholder="Issue Title">
 
         <select id="category">
-
-            <option value="Microsoft 365">Microsoft 365</option>
-            <option value="Outlook">Outlook</option>
-            <option value="Teams">Microsoft Teams</option>
-            <option value="OneDrive">OneDrive</option>
-            <option value="SharePoint">SharePoint</option>
-            <option value="Active Directory">Active Directory</option>
-            <option value="Azure">Azure</option>
-            <option value="VPN">VPN</option>
-            <option value="Printer">Printer</option>
-            <option value="Network">Network</option>
-            <option value="Security">Security</option>
-            <option value="Hardware">Hardware</option>
-            <option value="Software">Software</option>
-            <option value="Other">Other</option>
-
+            <option>Microsoft 365</option>
+            <option>Outlook</option>
+            <option>Teams</option>
+            <option>OneDrive</option>
+            <option>SharePoint</option>
+            <option>Active Directory</option>
+            <option>VPN</option>
+            <option>Printer</option>
+            <option>Network</option>
+            <option>Security</option>
+            <option>Hardware</option>
+            <option>Software</option>
+            <option>Other</option>
         </select>
 
-        <input
-            id="tags"
-            type="text"
-            placeholder="Tags (vpn,password,mfa,outlook)">
+        <input id="tags" type="text" placeholder="Tags (vpn,password,mfa,outlook)">
 
         <textarea
             id="notes"
-            rows="12"
+            rows="10"
             placeholder="Paste technician notes here..."></textarea>
 
         <h3>Attachments</h3>
@@ -71,7 +59,6 @@
             accept=".pdf,.doc,.docx,.txt,.xlsx,.one,.png,.jpg,.jpeg">
 
         <div class="button-row">
-
             <button onclick="cleanNotes()">
                 🤖 AI Clean Notes
             </button>
@@ -79,7 +66,6 @@
             <button onclick="saveDiscovery()">
                 🌿 Save Discovery
             </button>
-
         </div>
 
         <div id="aiOutput"></div>
@@ -88,7 +74,7 @@
 
 </div>
 
-app.js
+<script src="app.js"></script>
 
 </body>
 </html>
