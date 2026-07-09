@@ -1,191 +1,247 @@
 let discoveries =
 JSON.parse(localStorage.getItem("discoveries")) || [];
 
+let originalNotes = "";
+
 function cleanNotes(){
 
-    const notes =
-    document.getElementById("notes")?.value;
+const notesBox =
+document.getElementById("notes");
 
-    if(!notes){
-        alert("Enter notes first.");
-        return;
-    }
+if(!notesBox) return;
 
-    let steps = "";
+const notes = notesBox.value;
 
-    notes
-    .split(/\n|\.|-/)
-    .filter(line => line.trim() !== "")
-    .forEach((line,index)=>{
+if(notes.trim() === ""){
+alert("Enter notes first");
+return;
+}
 
-        steps += `
-        <li>${line.trim()}</li>
-        `;
+originalNotes = notes;
 
-    });
+let lines =
+notes
+.split(/\n|\.|-/)
+.filter(line => line.trim() !== "");
 
-    document.getElementById("aiOutput").innerHTML = `
-    <div class="ai-card">
+let cleanText =
+`Issue Investigation
 
-        <h2>🤖 AI Enhanced Procedure</h2>
+Summary:
+This issue was reviewed and organized into a structured troubleshooting process.
 
-        <h3>Summary</h3>
+Resolution Steps:
 
-        <p>
-        Notes were organized into a cleaner
-        troubleshooting procedure.
-        </p>
+`;
 
-        <h3>Resolution Steps</h3>
+lines.forEach((line,index)=>{
 
-        <ol>
-        ${steps}
-        </ol>
+cleanText += `${index+1}. ${line.trim()}\n`;
 
-        <h3>Suggested Missing Checks</h3>
+});
 
-        <ul>
-            <li>Verify MFA</li>
-            <li>Verify permissions</li>
-            <li>Capture screenshots</li>
-            <li>Test with user</li>
-            <li>Document resolution</li>
-        </ul>
+cleanText += `
 
-    </div>
-    `;
+Verification:
+- Confirm issue is resolved
+- Validate with end user
+- Update ticket notes
+
+Suggested Checks:
+- Verify permissions
+- Verify MFA
+- Check account lockouts
+`;
+
+notesBox.value = cleanText;
+
+}
+
+function undoCleanNotes(){
+
+const notesBox =
+document.getElementById("notes");
+
+if(notesBox){
+notesBox.value = originalNotes;
+}
+
 }
 
 function saveDiscovery(){
 
-    const title =
-    document.getElementById("title").value;
+const title =
+document.getElementById("title").value;
 
-    const category =
-    document.getElementById("category").value;
+const category =
+document.getElementById("category").value;
 
-    const tags =
-    document.getElementById("tags").value;
+const tags =
+document.getElementById("tags").value;
 
-    const notes =
-    document.getElementById("notes").value;
+const notes =
+document.getElementById("notes").value;
 
-    const files =
-    document.getElementById("files").files;
+const files =
+document.getElementById("files").files;
 
-    let attachments = [];
+let attachments = [];
 
-    for(let i=0;i<files.length;i++){
-        attachments.push(files[i].name);
-    }
+for(let i=0;i<files.length;i++){
 
-    discoveries.push({
-        title,
-        category,
-        tags,
-        notes,
-        attachments
-    });
+attachments.push(files[i].name);
 
-    localStorage.setItem(
-        "discoveries",
-        JSON.stringify(discoveries)
-    );
+}
 
-    alert("Discovery Saved!");
+discoveries.push({
+
+title,
+category,
+tags,
+notes,
+attachments,
+date:new Date().toLocaleDateString()
+
+});
+
+localStorage.setItem(
+"discoveries",
+JSON.stringify(discoveries)
+);
+
+alert("Discovery Saved");
+
+location.reload();
 }
 
 function searchKnowledge(){
 
-    const search =
-    document.getElementById("search")
-    ?.value
-    .toLowerCase() || "";
+const search =
+document.getElementById("search")
+?.value.toLowerCase() || "";
 
-    const category =
-    document.getElementById("filter")
-    ?.value || "";
+const category =
+document.getElementById("filter")
+?.value || "";
 
-    const filtered =
-    discoveries.filter(item =>
+const filtered =
+discoveries.filter(item =>
 
-        (
-            item.title.toLowerCase().includes(search)
-            ||
-            item.notes.toLowerCase().includes(search)
-            ||
-            item.tags.toLowerCase().includes(search)
-        )
+(
+item.title.toLowerCase().includes(search)
+||
+item.notes.toLowerCase().includes(search)
+||
+item.tags.toLowerCase().includes(search)
+)
 
-        &&
+&&
 
-        (
-            category === ""
-            ||
-            item.category === category
-        )
-    );
+(
+category === ""
+||
+item.category === category
+)
 
-    displayKnowledge(filtered);
+);
+
+displayKnowledge(filtered);
+
+}
+
+function toggleTicket(id){
+
+let ticket =
+document.getElementById(`ticket-${id}`);
+
+if(ticket.style.display === "block"){
+ticket.style.display = "none";
+}
+else{
+ticket.style.display = "block";
+}
+
 }
 
 function displayKnowledge(data){
 
-    const area =
-    document.getElementById("results");
+const area =
+document.getElementById("results");
 
-    if(!area) return;
+if(!area) return;
 
-    area.innerHTML = "";
+area.innerHTML = "";
 
-    data.forEach(item=>{
+data.forEach((item,index)=>{
 
-        area.innerHTML += `
-        <div class="discovery">
+area.innerHTML += `
 
-            <h2>${item.title}</h2>
+<div class="discovery">
 
-            <p>
-                <strong>Category:</strong>
-                ${item.category}
-            </p>
+<h2>${item.title}</h2>
 
-            <p>
-                <strong>Tags:</strong>
-                ${item.tags}
-            </p>
+<p>
+Category:
+${item.category}
+</p>
 
-            <p>${item.notes}</p>
+<p>
+Tags:
+${item.tags}
+</p>
 
-            <p>
-                <strong>Attachments:</strong>
-                ${item.attachments.join(", ")}
-            </p>
+<p>
+Created:
+${item.date}
+</p>
 
-        </div>
-        `;
-    });
+<button onclick="toggleTicket(${index})">
+📖 Open Ticket
+</button>
+
+<div
+class="ticket-details"
+id="ticket-${index}">
+
+<h3>Resolution Notes</h3>
+
+<pre>${item.notes}</pre>
+
+<p>
+<b>Attachments:</b>
+${item.attachments.join(", ")}
+</p>
+
+</div>
+
+</div>
+
+`;
+
+});
+
 }
 
 function loadDashboard(){
 
-    const total =
-    document.getElementById("totalDiscoveries");
+const total =
+document.getElementById("totalDiscoveries");
 
-    if(!total) return;
+if(!total) return;
 
-    total.innerText =
-    discoveries.length;
+total.innerText =
+discoveries.length;
 
-    const categories =
-    new Set(
-        discoveries.map(d=>d.category)
-    );
+const categories =
+new Set(
+discoveries.map(x=>x.category)
+);
 
-    document.getElementById(
-        "categoryCount"
-    ).innerText =
-    categories.size;
+document.getElementById(
+"categoryCount"
+).innerText =
+categories.size;
+
 }
 
 displayKnowledge(discoveries);
