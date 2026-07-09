@@ -6,23 +6,20 @@ box-sizing:border-box;
 
 body{
 font-family:Segoe UI,sans-serif;
-
-background:
-linear-gradient(
+background:linear-gradient(
 135deg,
 #0b3d0b,
 #146b1f,
 #2e8b57
 );
-
 color:white;
 min-height:100vh;
 }
 
 header{
-text-align:center;
-padding:35px;
 background:#013220;
+padding:30px;
+text-align:center;
 }
 
 nav{
@@ -53,6 +50,7 @@ padding:30px;
 background:rgba(255,255,255,.1);
 padding:25px;
 border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,.3);
 }
 
 input,
@@ -60,9 +58,9 @@ select,
 textarea{
 width:100%;
 padding:12px;
-margin-bottom:15px;
 border:none;
 border-radius:10px;
+margin-bottom:15px;
 }
 
 .button-row{
@@ -76,8 +74,8 @@ background:#9ccc65;
 border:none;
 padding:12px 20px;
 border-radius:10px;
-font-weight:bold;
 cursor:pointer;
+font-weight:bold;
 }
 
 button:hover{
@@ -85,19 +83,21 @@ background:#bcf57d;
 }
 
 .discovery{
-margin-top:15px;
+margin-top:20px;
 padding:20px;
 background:rgba(255,255,255,.1);
 border-left:5px solid #9ccc65;
 border-radius:10px;
 }
 
-.ticket-details{
-display:none;
-margin-top:15px;
-padding:15px;
-background:#133813;
-border-radius:10px;
+.discovery h2{
+margin-bottom:10px;
+color:#c4ff90;
+}
+
+.discovery button{
+margin-right:10px;
+margin-top:10px;
 }
 
 .dashboard-grid{
@@ -112,4 +112,17 @@ background:rgba(255,255,255,.1);
 padding:25px;
 border-radius:15px;
 text-align:center;
+}
+
+.stat-card h2{
+font-size:2rem;
+}
+
+pre{
+white-space:pre-wrap;
+line-height:1.5;
+}
+
+hr{
+margin:20px 0;
 }
