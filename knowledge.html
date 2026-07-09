@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jungle Jotter Knowledge Base</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base</title>
+<link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <header>
-    <h1>📚 Jungle Knowledge Base</h1>
+    <h1>📚 Knowledge Base</h1>
 </header>
 
 <nav>
@@ -22,19 +23,20 @@
 
     <input
         id="search"
-        type="text"
-        placeholder="Search VPN, Outlook, Printer..."
+        placeholder="Search knowledge..."
         onkeyup="searchKnowledge()">
 
-    <select id="filter" onchange="searchKnowledge()">
+    <select
+        id="filter"
+        onchange="searchKnowledge()">
 
         <option value="">All Categories</option>
-        <option value="Microsoft 365">Microsoft 365</option>
-        <option value="Outlook">Outlook</option>
-        <option value="Teams">Teams</option>
-        <option value="VPN">VPN</option>
-        <option value="Printer">Printer</option>
-        <option value="Network">Network</option>
+        <option>Microsoft 365</option>
+        <option>Outlook</option>
+        <option>Teams</option>
+        <option>VPN</option>
+        <option>Network</option>
+        <option>Printer</option>
 
     </select>
 
