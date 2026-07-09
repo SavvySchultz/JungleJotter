@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,58 +8,72 @@
 
     style.css
 </head>
+
 <body>
 
-<header>
-    <h1>🌴 Jungle Jotter</h1>
-    <p>Your IT Survival Guide Through the Jungle</p>
-</header>
+    <header>
+        <div class="logo-section">
+            <h1>🌴 Jungle Jotter</h1>
+            <p>Your IT Survival Guide Through the Jungle</p>
+        </div>
+    </header>
 
-<main class="container">
+    <main>
 
-    <section class="search-section">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="🔍 Search the Jungle..."
-        >
-    </section>
+        <section class="hero">
 
-    <section id="results"></section>
+            <div class="hero-card">
 
-    <section class="add-section">
-        <h2>📝 Add New Discovery</h2>
+                <h2>🧭 Find a Survival Guide</h2>
 
-        <input
-            type="text"
-            id="title"
-            placeholder="Task Name"
-        >
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search MFA, VPN, Printers, Shared Mailboxes..."
+                >
 
-        <input
-            type="text"
-            id="category"
-            placeholder="Category (M365, Networking, Printers, etc.)"
-        >
+            </div>
 
-        <textarea
-            id="steps"
-            rows="8"
-            placeholder="Enter each step on a new line..."
-        ></textarea>
+        </section>
 
-        <button onclick="addArticle()">
-            🌿 Save Discovery
-        </button>
-    </section>
+        <section id="results" class="results"></section>
 
-</main>
+        <section class="add-section">
 
-<footer>
-    Jungle Jotter • IT Knowledge Base
-</footer>
+            <h2>📝 Add New Discovery</h2>
 
-app.js
+            <input
+                type="text"
+                id="title"
+                placeholder="Task Name"
+            >
+
+            <input
+                type="text"
+                id="category"
+                placeholder="Category"
+            >
+
+            <textarea
+                id="steps"
+                rows="8"
+                placeholder="Enter one step per line..."
+            ></textarea>
+
+            <button onclick="addArticle()">
+                🌿 Save Discovery
+            </button>
+
+        </section>
+
+    </main>
+
+    <footer>
+        🌴 Jungle Jotter • Built for IT Explorers
+    </footer>
+
+    app.js
 
 </body>
+
 </html>
