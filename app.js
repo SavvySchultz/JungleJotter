@@ -3,193 +3,215 @@ JSON.parse(
 localStorage.getItem("discoveries")
 ) || [];
 
-function cleanNotes() {
+function cleanNotes(){
 
-    let notes =
-    document.getElementById("notes").value;
+let notes =
+document.getElementById("notes").value;
 
-    let cleaned =
-    notes
-    .split(".")
-    .filter(x => x.trim() !== "")
-    .map((step,index)=>
-        `Step ${index + 1}: ${step.trim()}`
-    )
-    .join("<br>");
+if(!notes){
 
-    document.getElementById(
-        "cleanedArea"
-    ).innerHTML =
+alert("Enter notes first");
 
-    `
-    <div class='clean-box'>
-        <h3>Clean Procedure</h3>
-        ${cleaned}
-    </div>
-    `;
+return;
 }
 
-function saveDiscovery() {
+let sentences =
+notes.split(/[.\n]/);
 
-    let title =
-    document.getElementById("title").value;
+let cleanOutput = "";
 
-    let category =
-    document.getElementById("category").value;
+sentences.forEach((line,index)=>{
 
-    let tags =
-    document.getElementById("tags").value;
+if(line.trim() !== ""){
 
-    let notes =
-    document.getElementById("notes").value;
+cleanOutput +=
+`<li>Step ${index+1}: ${line.trim()}</li>`;
 
-    let file =
-    document.getElementById(
-        "attachment"
-    ).files[0];
-
-    let fileName = "";
-
-    if(file){
-        fileName = file.name;
-    }
-
-    discoveries.push({
-
-        title,
-        category,
-        tags,
-        notes,
-        fileName
-
-    });
-
-    localStorage.setItem(
-        "discoveries",
-        JSON.stringify(discoveries)
-    );
-
-    alert("Discovery Saved");
-
-    location.reload();
 }
 
-function loadKnowledge() {
+});
 
-    let results =
-    document.getElementById("results");
+document.getElementById("aiOutput").innerHTML =
+`
+<div class="ai-card">
 
-    if(!results) return;
+<h2>🤖 AI Enhanced Procedure</h2>
 
-    displayDiscoveries(discoveries);
+<h3>Symptoms</h3>
+<p>Issue reported by technician.</p>
 
-    document
-        .getElementById("searchBox")
-        .addEventListener("input",
-        filterSearch);
+<h3>Resolution Steps</h3>
 
-    document
-        .getElementById(
-            "filterCategory"
-        )
-        .addEventListener(
-            "change",
-            filterSearch
-        );
+<ol>
+${cleanOutput}
+</ol>
+
+<h3>Suggested Improvements</h3>
+
+<ul>
+
+<li>Verify permissions</li>
+<li>Check MFA status</li>
+<li>Document screenshots</li>
+<li>Validate with end user</li>
+
+</ul>
+
+</div>
+`;
 }
 
-function filterSearch() {
+function saveDiscovery(){
 
-    let search =
-    document.getElementById(
-        "searchBox"
-    ).value.toLowerCase();
+let title =
+document.getElementById("title").value;
 
-    let category =
-    document.getElementById(
-        "filterCategory"
-    ).value;
+let category =
+document.getElementById("category").value;
 
-    let filtered =
-    discoveries.filter(item =>
+let tags =
+document.getElementById("tags").value;
 
-        (
-            item.title
-            .toLowerCase()
-            .includes(search)
+let notes =
+document.getElementById("notes").value;
 
-            ||
+let files =
+document.getElementById("files").files;
 
-            item.notes
-            .toLowerCase()
-            .includes(search)
+let attachments = [];
 
-            ||
+for(let i=0;i<files.length;i++){
 
-            item.tags
-            .toLowerCase()
-            .includes(search)
+attachments.push(files[i].name);
 
-        )
-
-        &&
-
-        (
-            category === ""
-            ||
-
-            item.category === category
-        )
-
-    );
-
-    displayDiscoveries(filtered);
 }
 
-function displayDiscoveries(list) {
+discoveries.push({
 
-    let results =
-    document.getElementById(
-        "results"
-    );
+title,
+category,
+tags,
+notes,
+attachments
 
-    results.innerHTML = "";
+});
 
-    list.forEach(item => {
+localStorage.setItem(
+"discoveries",
+JSON.stringify(discoveries)
+);
 
-        results.innerHTML +=
+alert("Discovery Saved");
+}
 
-        `
-        <div class="discovery-card">
+function loadKnowledge(){
 
-            <h3>${item.title}</h3>
+let results =
+document.getElementById("results");
 
-            <div class="category">
-                ${item.category}
-            </div>
+if(!results) return;
 
-            <p>
-                <b>Tags:</b>
-                ${item.tags}
-            </p>
+displayKnowledge(discoveries);
+}
 
-            <hr><br>
+function searchKnowledge(){
 
-            <p>${item.notes}</p>
+let search =
+document
+.getElementById("search")
+.value
+.toLowerCase();
 
-            <br>
+let category =
+document
+.getElementById("filter")
+.value;
 
-            <b>
-            Attachment:
-            </b>
+let filtered =
+discoveries.filter(item =>
 
-            ${item.fileName
-                ? item.fileName
-                : "None"}
+(
+item.title.toLowerCase().includes(search)
+||
+item.notes.toLowerCase().includes(search)
+||
+item.tags.toLowerCase().includes(search)
+)
 
-        </div>
-        `;
-    });
+&&
+
+(
+category === ""
+||
+item.category === category
+)
+
+);
+
+displayKnowledge(filtered);
+}
+
+function displayKnowledge(data){
+
+const area =
+document.getElementById("results");
+
+if(!area) return;
+
+area.innerHTML = "";
+
+data.forEach(item=>{
+
+area.innerHTML +=
+`
+<div class="discovery">
+
+<h2>${item.title}</h2>
+
+<p><b>Category:</b>
+${item.category}</p>
+
+<p><b>Tags:</b>
+${item.tags}</p>
+
+<p>${item.notes}</p>
+
+<p>
+
+<b>Attachments:</b>
+
+${item.attachments.join(", ")}
+
+</p>
+
+</div>
+`;
+});
+}
+
+function loadDashboard(){
+
+let total =
+document.getElementById(
+"totalDiscoveries"
+);
+
+if(!total) return;
+
+total.innerText =
+discoveries.length;
+
+let unique =
+new Set(
+discoveries.map(x=>x.category)
+);
+
+document.getElementById(
+"categoryCount"
+).innerText =
+unique.size;
 }
 
 loadKnowledge();
+loadDashboard();
+`
