@@ -1,38 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Knowledge Base</title>
-    <link rel="stylesheet" href="styles.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Knowledge Base</title>
+
+<link rel="stylesheet" href="styles.css">
+
 </head>
+
 <body>
 
 <header>
-    <h1>📚 Jungle Knowledge Base</h1>
+
+<h1>📚 Jungle Knowledge Base</h1>
+
 </header>
 
 <nav>
-    <a href="index.html">Add Discovery</a>
-    knowledge.htmlKnowledge Base</a>
+index.html">Add Discovery</a>
+knowledge.htmlKnowledge Base</a>
+dashboard.html
 </nav>
 
 <div class="container">
 
-    <input
-        id="searchBox"
-        placeholder="Search Outlook, VPN, MFA, Printer...">
+<input
+id="search"
+placeholder="Search VPN, Outlook, MFA, Printer..."
+onkeyup="searchKnowledge()">
 
-    <select id="filterCategory">
+<select
+id="filter"
+onchange="searchKnowledge()">
 
-        <option value="">All Categories</option>
-        <option value="Outlook">Outlook</option>
-        <option value="VPN">VPN</option>
-        <option value="Printer">Printer</option>
-        <option value="M365">M365</option>
-        <option value="Network">Network</option>
+<option value="">All Categories</option>
+<option value="Microsoft 365">Microsoft 365</option>
+<option value="Outlook">Outlook</option>
+<option value="Teams">Teams</option>
+<option value="VPN">VPN</option>
+<option value="Network">Network</option>
 
-    </select>
+</select>
 
-    <div id="results"></div>
+<div id="results"></div>
 
 </div>
 
