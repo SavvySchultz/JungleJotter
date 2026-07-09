@@ -1,65 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jungle Jotter</title>
-    ">
+    <title>Jungle Jotter - Submit Discovery</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header>
-    <h1>🌿 Jungle Jotter</h1>
-    <p>Your IT Knowledge Jungle</p>
+    <h1>🌴 Jungle Jotter</h1>
+    <p>Submit New Discovery</p>
 </header>
+
+<nav>
+    <a href="index.html">Add Discovery</a>
+    knowledge.html
+</nav>
 
 <div class="container">
 
-    <section class="search-section">
-        <input
-            type="text"
-            id="searchBox"
-            placeholder="Search Outlook, VPN, Printer, MFA..."
-        >
-    </section>
+    <div class="card">
 
-    <section class="note-form">
-        <h2>Add Knowledge Entry</h2>
+        <h2>Add New Discovery</h2>
 
         <input
-            type="text"
             id="title"
-            placeholder="Task Title"
-        >
+            placeholder="Issue / Task Name">
 
         <select id="category">
-            <option>General</option>
-            <option>Outlook</option>
-            <option>VPN</option>
-            <option>Printer</option>
-            <option>Active Directory</option>
-            <option>M365</option>
-            <option>Network</option>
+
+            <option value="Outlook">Outlook</option>
+            <option value="VPN">VPN</option>
+            <option value="M365">Microsoft 365</option>
+            <option value="Printer">Printer</option>
+            <option value="Email">Email</option>
+            <option value="Network">Network</option>
+            <option value="Active Directory">Active Directory</option>
+            <option value="Security">Security</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Software">Software</option>
+            <option value="Other">Other</option>
+
         </select>
+
+        <input
+            id="tags"
+            placeholder="Tags (vpn, password, remote)">
 
         <textarea
             id="notes"
-            placeholder="Enter troubleshooting steps, fixes, procedures..."
-        ></textarea>
+            rows="10"
+            placeholder="Paste messy notes here..."></textarea>
 
-        <button onclick="saveNote()">Add Note</button>
-    </section>
+        <input
+            type="file"
+            id="attachment"
+            accept=".pdf,.doc,.docx,.one,.txt,.png,.jpg,.jpeg">
 
-    <section>
-        <h2>Knowledge Base</h2>
-        <div id="notesContainer"></div>
-    </section>
+        <button onclick="cleanNotes()">
+            🌿 Clean Notes
+        </button>
+
+        <div id="cleanedArea"></div>
+
+        <button onclick="saveDiscovery()">
+            Save Discovery
+        </button>
+
+    </div>
 
 </div>
-
-<footer>
-    Jungle Jotter © 2026
-</footer>
 
 app.js
 
