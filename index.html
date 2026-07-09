@@ -1,44 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jungle Jotter</title>
+    <title>🌴 Jungle Jotter</title>
 
-    style.css
+    <link .css
 </head>
-
 <body>
 
-    <header>
-        <div class="logo-section">
-            <h1>🌴 Jungle Jotter</h1>
-            <p>Your IT Survival Guide Through the Jungle</p>
-        </div>
+    <header class="header">
+        <h1>🌴 Jungle Jotter</h1>
+        <p>Your IT Survival Guide Through the Jungle</p>
     </header>
 
-    <main>
+    <div class="container">
 
-        <section class="hero">
+        <div class="search-box">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search MFA, VPN, Printers, Shared Mailboxes..."
+            >
+        </div>
 
-            <div class="hero-card">
+        <div id="results"></div>
 
-                <h2>🧭 Find a Survival Guide</h2>
-
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search MFA, VPN, Printers, Shared Mailboxes..."
-                >
-
-            </div>
-
-        </section>
-
-        <section id="results" class="results"></section>
-
-        <section class="add-section">
+        <div class="form-card">
 
             <h2>📝 Add New Discovery</h2>
 
@@ -56,17 +44,17 @@
 
             <textarea
                 id="steps"
-                rows="8"
+                rows="6"
                 placeholder="Enter one step per line..."
             ></textarea>
 
             <button onclick="addArticle()">
-                🌿 Save Discovery
+                Save Discovery
             </button>
 
-        </section>
+        </div>
 
-    </main>
+    </div>
 
     <footer>
         🌴 Jungle Jotter • Built for IT Explorers
@@ -75,5 +63,4 @@
     app.js
 
 </body>
-
 </html>
