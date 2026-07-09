@@ -1,81 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Jungle Jotter</title>
-<link rel="stylesheet" href="styles.css">
+
+<link rel="stylesheet"
+href="styles.css">
+
 </head>
 
 <body>
 
 <header>
-    <h1>🌴 Jungle Jotter</h1>
-    <p>Explore the Knowledge Jungle</p>
+
+<h1>🌴 Jungle Jotter</h1>
+
+<p>Your IT Knowledge Jungle</p>
+
 </header>
+
 <nav>
-    <a href="index.html">Add Discovery</a>
-    <a href="knowledge.html">Knowledge Base</a>
-    <a href="dashboard.html">Dashboard</a>
+
+<a href="index.html">Add Discovery</a>
+
+<a href="knowledge.html">Knowledge Base</a>
+
+<a href="dashboard.html">Dashboard</a>
+
 </nav>
 
 <div class="container">
 
-    <div class="card">
+<div class="card">
 
-        <h2>Add New Discovery</h2>
+<h2>Add New Discovery</h2>
 
-        <input id="title" placeholder="Issue Title">
+<input
+id="title"
+placeholder="Issue Title">
 
-        <select id="category">
-            <option>Microsoft 365</option>
-            <option>Outlook</option>
-            <option>Teams</option>
-            <option>OneDrive</option>
-            <option>SharePoint</option>
-            <option>Active Directory</option>
-            <option>VPN</option>
-            <option>Network</option>
-            <option>Printer</option>
-            <option>Security</option>
-            <option>Hardware</option>
-            <option>Software</option>
-            <option>Other</option>
-        </select>
+<select id="category">
 
-        <input id="tags" placeholder="Tags (vpn,mfa,password reset)">
+<option>Microsoft 365</option>
+<option>Outlook</option>
+<option>Teams</option>
+<option>OneDrive</option>
+<option>SharePoint</option>
+<option>Active Directory</option>
+<option>VPN</option>
+<option>Network</option>
+<option>Printer</option>
+<option>Security</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Other</option>
 
-        <textarea
-            id="notes"
-            rows="12"
-            placeholder="Paste technician notes here..."></textarea>
+</select>
 
-        <input
-            type="file"
-            id="files"
-            multiple>
+<input
+id="tags"
+placeholder="vpn,mfa,password">
 
-        <div class="button-row">
+<textarea
+id="notes"
+rows="12"
+placeholder="Paste notes here"></textarea>
 
-            <button onclick="cleanNotes()">
-                🤖 AI Clean Notes
-            </button>
+<div class="button-row">
 
-            <button onclick="undoCleanNotes()">
-                ↩ Undo
-            </button>
+<button onclick="cleanNotes()">
+🤖 Smart Clean
+</button>
 
-            <button onclick="saveDiscovery()">
-                🌿 Save Discovery
-            </button>
+<button onclick="undoCleanNotes()">
+↩ Undo
+</button>
 
-        </div>
-
-    </div>
+<button onclick="saveDiscovery()">
+🌿 Save Discovery
+</button>
 
 </div>
 
-<script src="app.js"></script>
+</div>
+
+</div>
+
+app.js"></script>
 
 </body>
+
 </html>
