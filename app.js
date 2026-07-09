@@ -3,9 +3,10 @@ JSON.parse(localStorage.getItem("discoveries")) || [];
 
 let originalNotes = "";
 
-/* ------------------------------
-   Better AI Cleanup
---------------------------------*/
+/* -------------------- */
+/* AI CLEAN NOTES */
+/* -------------------- */
+
 function cleanNotes() {
 
     const notesBox =
@@ -23,49 +24,47 @@ function cleanNotes() {
 
     originalNotes = notes;
 
-    let lines =
+    const lines =
         notes
             .split(/\n+/)
-            .filter(x => x.trim());
+            .filter(line => line.trim());
 
-    let cleaned = `
+    let output = `
 Issue Investigation
 
 Issue Summary:
 ${lines[0]}
 
-Troubleshooting:
+Troubleshooting Steps:
 `;
 
     lines.forEach((line, index) => {
-
-        cleaned +=
-            `${index + 1}. ${line.trim()}\n`;
-
+        output += `${index + 1}. ${line}\n`;
     });
 
-    cleaned += `
+    output += `
 
 Resolution:
-Issue resolved after troubleshooting steps.
+Issue resolved after troubleshooting.
 
 Verification:
-✅ User confirmed functionality.
-✅ Service tested successfully.
+✅ Tested successfully
+✅ User confirmed functionality
 
-Recommended Checks:
+Suggested Checks:
 • Verify permissions
 • Verify MFA
-• Check account status
-• Review recent changes
+• Check account lockouts
+• Review logs
 `;
 
-    notesBox.value = cleaned;
+    notesBox.value = output;
 }
 
-/* ------------------------------
-   Undo Cleanup
---------------------------------*/
+/* -------------------- */
+/* UNDO */
+/* -------------------- */
+
 function undoCleanNotes() {
 
     const notesBox =
@@ -76,9 +75,10 @@ function undoCleanNotes() {
     }
 }
 
-/* ------------------------------
-   Save Discovery
---------------------------------*/
+/* -------------------- */
+/* SAVE */
+/* -------------------- */
+
 function saveDiscovery() {
 
     const title =
@@ -112,7 +112,8 @@ function saveDiscovery() {
         rating: 0,
 
         date:
-            new Date().toLocaleDateString()
+        new Date().toLocaleDateString()
+
     });
 
     localStorage.setItem(
@@ -120,84 +121,50 @@ function saveDiscovery() {
         JSON.stringify(discoveries)
     );
 
-    alert("Discovery Saved");
+    alert("Discovery Saved!");
 
     location.reload();
 }
 
-/* ------------------------------
-   Search
---------------------------------*/
+/* -------------------- */
+/* SEARCH */
+/* -------------------- */
+
 function searchKnowledge() {
 
     const search =
         document.getElementById("search")
-            ?.value.toLowerCase() || "";
+        ?.value.toLowerCase() || "";
 
     const category =
         document.getElementById("filter")
-            ?.value || "";
+        ?.value || "";
 
     const filtered =
         discoveries.filter(item => {
 
-            const searchable =
-                `
-                ${item.title}
-                ${item.notes}
-                ${item.tags}
-                ${item.category}
-                `.toLowerCase();
+            const searchable = `
+            ${item.title}
+            ${item.notes}
+            ${item.tags}
+            ${item.category}
+            `.toLowerCase();
 
             return searchable.includes(search) &&
-                (category === "" ||
-                    category === item.category);
+                (
+                    category === "" ||
+                    item.category === category
+                );
 
         });
 
     displayKnowledge(filtered);
 }
 
-/* ------------------------------
-   Open Ticket Page
---------------------------------*/
-function openTicket(id) {
+/* -------------------- */
+/* DISPLAY */
+/* -------------------- */
 
-    const ticket =
-        discoveries.find(x => x.id === id);
-
-    localStorage.setItem(
-        "selectedTicket",
-        JSON.stringify(ticket)
-    );
-
-    window.location.href =
-        "ticket.html";
-}
-
-/* ------------------------------
-   Voting
---------------------------------*/
-function voteTicket(id) {
-
-    const ticket =
-        discoveries.find(x => x.id === id);
-
-    if (!ticket) return;
-
-    ticket.rating++;
-
-    localStorage.setItem(
-        "discoveries",
-        JSON.stringify(discoveries)
-    );
-
-    displayKnowledge(discoveries);
-}
-
-/* ------------------------------
-   Display Knowledge
---------------------------------*/
 function displayKnowledge(data) {
 
     const area =
@@ -221,7 +188,7 @@ function displayKnowledge(data) {
 
             <p><b>Date:</b> ${item.date}</p>
 
-            <p>👍 ${item.rating || 0}</p>
+            <p><b>Helpful Votes:</b> ${item.rating || 0}</p>
 
             <button onclick="openTicket(${item.id})">
                 🔍 View Ticket
@@ -232,13 +199,58 @@ function displayKnowledge(data) {
             </button>
 
         </div>
+
         `;
     });
 }
 
-/* ------------------------------
-   Ticket Page
---------------------------------*/
+/* -------------------- */
+/* OPEN TICKET */
+/* -------------------- */
+
+function openTicket(id) {
+
+    const ticket =
+        discoveries.find(
+            x => x.id === id
+        );
+
+    localStorage.setItem(
+        "selectedTicket",
+        JSON.stringify(ticket)
+    );
+
+    window.location.href =
+        "ticket.html";
+}
+
+/* -------------------- */
+/* HELPFUL */
+/* -------------------- */
+
+function voteTicket(id) {
+
+    const ticket =
+        discoveries.find(
+            x => x.id === id
+        );
+
+    if (!ticket) return;
+
+    ticket.rating++;
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    location.reload();
+}
+
+/* -------------------- */
+/* LOAD TICKET */
+/* -------------------- */
+
 function loadTicket() {
 
     const ticket =
@@ -256,84 +268,25 @@ function loadTicket() {
         ticket.title;
 
     document.getElementById(
-        "ticketContent"
+        "ticketDetails"
     ).innerHTML = `
 
-        <p><b>Category:</b> ${ticket.category}</p>
+    <p><b>Category:</b> ${ticket.category}</p>
 
-        <p><b>Tags:</b> ${ticket.tags}</p>
+    <p><b>Tags:</b> ${ticket.tags}</p>
 
-        <p><b>Date:</b> ${ticket.date}</p>
+    <p><b>Date:</b> ${ticket.date}</p>
 
-        <h3>Resolution Notes</h3>
+    <p><b>Helpful Votes:</b> ${ticket.rating}</p>
 
-        <pre>${ticket.notes}</pre>
+    <h3>Resolution Notes</h3>
+
+    <pre>${ticket.notes}</pre>
+
     `;
 
     const related =
-        discoveries.filter(x =>
+        discoveries.filter(
+            x =>
             x.id !== ticket.id &&
             x.category === ticket.category
-        );
-
-    const relatedArea =
-        document.getElementById("related");
-
-    if (relatedArea) {
-
-        relatedArea.innerHTML =
-            "<h3>Related Tickets</h3>";
-
-        related.forEach(item => {
-
-            relatedArea.innerHTML += `
-                <p>${item.title}</p>
-            `;
-        });
-    }
-}
-
-/* ------------------------------
-   Dashboard
---------------------------------*/
-function loadDashboard() {
-
-    const total =
-        document.getElementById(
-            "totalDiscoveries"
-        );
-
-    if (!total) return;
-
-    total.innerText =
-        discoveries.length;
-
-    const categories =
-        new Set(
-            discoveries.map(
-                x => x.category
-            )
-        );
-
-    document.getElementById(
-        "categoryCount"
-    ).innerText =
-        categories.size;
-
-    const topTicket =
-        discoveries.sort(
-            (a, b) =>
-                (b.rating || 0) -
-                (a.rating || 0)
-        )[0];
-
-    document.getElementById(
-        "topArticle"
-    ).innerText =
-        topTicket
-            ? topTicket.title
-            : "None";
-}
-
-displayKnowledge(discoveries);
-loadDashboard();
