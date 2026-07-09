@@ -3,245 +3,336 @@ JSON.parse(localStorage.getItem("discoveries")) || [];
 
 let originalNotes = "";
 
-function cleanNotes(){
+/* ------------------------------
+   Better AI Cleanup
+--------------------------------*/
+function cleanNotes() {
 
-const notesBox =
-document.getElementById("notes");
+    const notesBox =
+        document.getElementById("notes");
 
-if(!notesBox) return;
+    if (!notesBox) return;
 
-const notes = notesBox.value;
+    const notes =
+        notesBox.value.trim();
 
-if(notes.trim() === ""){
-alert("Enter notes first");
-return;
-}
+    if (!notes) {
+        alert("Enter notes first");
+        return;
+    }
 
-originalNotes = notes;
+    originalNotes = notes;
 
-let lines =
-notes
-.split(/\n|\.|-/)
-.filter(line => line.trim() !== "");
+    let lines =
+        notes
+            .split(/\n+/)
+            .filter(x => x.trim());
 
-let cleanText =
-`Issue Investigation
+    let cleaned = `
+Issue Investigation
 
-Summary:
-This issue was reviewed and organized into a structured troubleshooting process.
+Issue Summary:
+${lines[0]}
 
-Resolution Steps:
-
+Troubleshooting:
 `;
 
-lines.forEach((line,index)=>{
+    lines.forEach((line, index) => {
 
-cleanText += `${index+1}. ${line.trim()}\n`;
+        cleaned +=
+            `${index + 1}. ${line.trim()}\n`;
 
-});
+    });
 
-cleanText += `
+    cleaned += `
+
+Resolution:
+Issue resolved after troubleshooting steps.
 
 Verification:
-- Confirm issue is resolved
-- Validate with end user
-- Update ticket notes
+✅ User confirmed functionality.
+✅ Service tested successfully.
 
-Suggested Checks:
-- Verify permissions
-- Verify MFA
-- Check account lockouts
+Recommended Checks:
+• Verify permissions
+• Verify MFA
+• Check account status
+• Review recent changes
 `;
 
-notesBox.value = cleanText;
-
+    notesBox.value = cleaned;
 }
 
-function undoCleanNotes(){
+/* ------------------------------
+   Undo Cleanup
+--------------------------------*/
+function undoCleanNotes() {
 
-const notesBox =
-document.getElementById("notes");
+    const notesBox =
+        document.getElementById("notes");
 
-if(notesBox){
-notesBox.value = originalNotes;
+    if (notesBox) {
+        notesBox.value = originalNotes;
+    }
 }
 
+/* ------------------------------
+   Save Discovery
+--------------------------------*/
+function saveDiscovery() {
+
+    const title =
+        document.getElementById("title").value;
+
+    const category =
+        document.getElementById("category").value;
+
+    const tags =
+        document.getElementById("tags").value;
+
+    const notes =
+        document.getElementById("notes").value;
+
+    if (!title || !notes) {
+
+        alert("Title and Notes required");
+
+        return;
+    }
+
+    discoveries.push({
+
+        id: Date.now(),
+
+        title,
+        category,
+        tags,
+        notes,
+
+        rating: 0,
+
+        date:
+            new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    alert("Discovery Saved");
+
+    location.reload();
 }
 
-function saveDiscovery(){
+/* ------------------------------
+   Search
+--------------------------------*/
+function searchKnowledge() {
 
-const title =
-document.getElementById("title").value;
+    const search =
+        document.getElementById("search")
+            ?.value.toLowerCase() || "";
 
-const category =
-document.getElementById("category").value;
+    const category =
+        document.getElementById("filter")
+            ?.value || "";
 
-const tags =
-document.getElementById("tags").value;
+    const filtered =
+        discoveries.filter(item => {
 
-const notes =
-document.getElementById("notes").value;
+            const searchable =
+                `
+                ${item.title}
+                ${item.notes}
+                ${item.tags}
+                ${item.category}
+                `.toLowerCase();
 
-const files =
-document.getElementById("files").files;
+            return searchable.includes(search) &&
+                (category === "" ||
+                    category === item.category);
 
-let attachments = [];
+        });
 
-for(let i=0;i<files.length;i++){
-
-attachments.push(files[i].name);
-
+    displayKnowledge(filtered);
 }
 
-discoveries.push({
+/* ------------------------------
+   Open Ticket Page
+--------------------------------*/
+function openTicket(id) {
 
-title,
-category,
-tags,
-notes,
-attachments,
-date:new Date().toLocaleDateString()
+    const ticket =
+        discoveries.find(x => x.id === id);
 
-});
+    localStorage.setItem(
+        "selectedTicket",
+        JSON.stringify(ticket)
+    );
 
-localStorage.setItem(
-"discoveries",
-JSON.stringify(discoveries)
-);
-
-alert("Discovery Saved");
-
-location.reload();
+    window.location.href =
+        "ticket.html";
 }
 
-function searchKnowledge(){
+/* ------------------------------
+   Voting
+--------------------------------*/
+function voteTicket(id) {
 
-const search =
-document.getElementById("search")
-?.value.toLowerCase() || "";
+    const ticket =
+        discoveries.find(x => x.id === id);
 
-const category =
-document.getElementById("filter")
-?.value || "";
+    if (!ticket) return;
 
-const filtered =
-discoveries.filter(item =>
+    ticket.rating++;
 
-(
-item.title.toLowerCase().includes(search)
-||
-item.notes.toLowerCase().includes(search)
-||
-item.tags.toLowerCase().includes(search)
-)
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
 
-&&
-
-(
-category === ""
-||
-item.category === category
-)
-
-);
-
-displayKnowledge(filtered);
-
+    displayKnowledge(discoveries);
 }
 
-function toggleTicket(id){
+/* ------------------------------
+   Display Knowledge
+--------------------------------*/
+function displayKnowledge(data) {
 
-let ticket =
-document.getElementById(`ticket-${id}`);
+    const area =
+        document.getElementById("results");
 
-if(ticket.style.display === "block"){
-ticket.style.display = "none";
-}
-else{
-ticket.style.display = "block";
-}
+    if (!area) return;
 
-}
+    area.innerHTML = "";
 
-function displayKnowledge(data){
+    data.forEach(item => {
 
-const area =
-document.getElementById("results");
+        area.innerHTML += `
 
-if(!area) return;
+        <div class="discovery">
 
-area.innerHTML = "";
+            <h2>${item.title}</h2>
 
-data.forEach((item,index)=>{
+            <p><b>Category:</b> ${item.category}</p>
 
-area.innerHTML += `
+            <p><b>Tags:</b> ${item.tags}</p>
 
-<div class="discovery">
+            <p><b>Date:</b> ${item.date}</p>
 
-<h2>${item.title}</h2>
+            <p>👍 ${item.rating || 0}</p>
 
-<p>
-Category:
-${item.category}
-</p>
+            <button onclick="openTicket(${item.id})">
+                🔍 View Ticket
+            </button>
 
-<p>
-Tags:
-${item.tags}
-</p>
+            <button onclick="voteTicket(${item.id})">
+                👍 Helpful
+            </button>
 
-<p>
-Created:
-${item.date}
-</p>
-
-<button onclick="toggleTicket(${index})">
-📖 Open Ticket
-</button>
-
-<div
-class="ticket-details"
-id="ticket-${index}">
-
-<h3>Resolution Notes</h3>
-
-<pre>${item.notes}</pre>
-
-<p>
-<b>Attachments:</b>
-${item.attachments.join(", ")}
-</p>
-
-</div>
-
-</div>
-
-`;
-
-});
-
+        </div>
+        `;
+    });
 }
 
-function loadDashboard(){
+/* ------------------------------
+   Ticket Page
+--------------------------------*/
+function loadTicket() {
 
-const total =
-document.getElementById("totalDiscoveries");
+    const ticket =
+        JSON.parse(
+            localStorage.getItem(
+                "selectedTicket"
+            )
+        );
 
-if(!total) return;
+    if (!ticket) return;
 
-total.innerText =
-discoveries.length;
+    document.getElementById(
+        "ticketTitle"
+    ).innerText =
+        ticket.title;
 
-const categories =
-new Set(
-discoveries.map(x=>x.category)
-);
+    document.getElementById(
+        "ticketContent"
+    ).innerHTML = `
 
-document.getElementById(
-"categoryCount"
-).innerText =
-categories.size;
+        <p><b>Category:</b> ${ticket.category}</p>
 
+        <p><b>Tags:</b> ${ticket.tags}</p>
+
+        <p><b>Date:</b> ${ticket.date}</p>
+
+        <h3>Resolution Notes</h3>
+
+        <pre>${ticket.notes}</pre>
+    `;
+
+    const related =
+        discoveries.filter(x =>
+            x.id !== ticket.id &&
+            x.category === ticket.category
+        );
+
+    const relatedArea =
+        document.getElementById("related");
+
+    if (relatedArea) {
+
+        relatedArea.innerHTML =
+            "<h3>Related Tickets</h3>";
+
+        related.forEach(item => {
+
+            relatedArea.innerHTML += `
+                <p>${item.title}</p>
+            `;
+        });
+    }
+}
+
+/* ------------------------------
+   Dashboard
+--------------------------------*/
+function loadDashboard() {
+
+    const total =
+        document.getElementById(
+            "totalDiscoveries"
+        );
+
+    if (!total) return;
+
+    total.innerText =
+        discoveries.length;
+
+    const categories =
+        new Set(
+            discoveries.map(
+                x => x.category
+            )
+        );
+
+    document.getElementById(
+        "categoryCount"
+    ).innerText =
+        categories.size;
+
+    const topTicket =
+        discoveries.sort(
+            (a, b) =>
+                (b.rating || 0) -
+                (a.rating || 0)
+        )[0];
+
+    document.getElementById(
+        "topArticle"
+    ).innerText =
+        topTicket
+            ? topTicket.title
+            : "None";
 }
 
 displayKnowledge(discoveries);
