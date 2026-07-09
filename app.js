@@ -1,217 +1,192 @@
 let discoveries =
-JSON.parse(
-localStorage.getItem("discoveries")
-) || [];
+JSON.parse(localStorage.getItem("discoveries")) || [];
 
 function cleanNotes(){
 
-let notes =
-document.getElementById("notes").value;
+    const notes =
+    document.getElementById("notes")?.value;
 
-if(!notes){
+    if(!notes){
+        alert("Enter notes first.");
+        return;
+    }
 
-alert("Enter notes first");
+    let steps = "";
 
-return;
-}
+    notes
+    .split(/\n|\.|-/)
+    .filter(line => line.trim() !== "")
+    .forEach((line,index)=>{
 
-let sentences =
-notes.split(/[.\n]/);
+        steps += `
+        <li>${line.trim()}</li>
+        `;
 
-let cleanOutput = "";
+    });
 
-sentences.forEach((line,index)=>{
+    document.getElementById("aiOutput").innerHTML = `
+    <div class="ai-card">
 
-if(line.trim() !== ""){
+        <h2>🤖 AI Enhanced Procedure</h2>
 
-cleanOutput +=
-`<li>Step ${index+1}: ${line.trim()}</li>`;
+        <h3>Summary</h3>
 
-}
+        <p>
+        Notes were organized into a cleaner
+        troubleshooting procedure.
+        </p>
 
-});
+        <h3>Resolution Steps</h3>
 
-document.getElementById("aiOutput").innerHTML =
-`
-<div class="ai-card">
+        <ol>
+        ${steps}
+        </ol>
 
-<h2>🤖 AI Enhanced Procedure</h2>
+        <h3>Suggested Missing Checks</h3>
 
-<h3>Symptoms</h3>
-<p>Issue reported by technician.</p>
+        <ul>
+            <li>Verify MFA</li>
+            <li>Verify permissions</li>
+            <li>Capture screenshots</li>
+            <li>Test with user</li>
+            <li>Document resolution</li>
+        </ul>
 
-<h3>Resolution Steps</h3>
-
-<ol>
-${cleanOutput}
-</ol>
-
-<h3>Suggested Improvements</h3>
-
-<ul>
-
-<li>Verify permissions</li>
-<li>Check MFA status</li>
-<li>Document screenshots</li>
-<li>Validate with end user</li>
-
-</ul>
-
-</div>
-`;
+    </div>
+    `;
 }
 
 function saveDiscovery(){
 
-let title =
-document.getElementById("title").value;
+    const title =
+    document.getElementById("title").value;
 
-let category =
-document.getElementById("category").value;
+    const category =
+    document.getElementById("category").value;
 
-let tags =
-document.getElementById("tags").value;
+    const tags =
+    document.getElementById("tags").value;
 
-let notes =
-document.getElementById("notes").value;
+    const notes =
+    document.getElementById("notes").value;
 
-let files =
-document.getElementById("files").files;
+    const files =
+    document.getElementById("files").files;
 
-let attachments = [];
+    let attachments = [];
 
-for(let i=0;i<files.length;i++){
+    for(let i=0;i<files.length;i++){
+        attachments.push(files[i].name);
+    }
 
-attachments.push(files[i].name);
+    discoveries.push({
+        title,
+        category,
+        tags,
+        notes,
+        attachments
+    });
 
-}
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
 
-discoveries.push({
-
-title,
-category,
-tags,
-notes,
-attachments
-
-});
-
-localStorage.setItem(
-"discoveries",
-JSON.stringify(discoveries)
-);
-
-alert("Discovery Saved");
-}
-
-function loadKnowledge(){
-
-let results =
-document.getElementById("results");
-
-if(!results) return;
-
-displayKnowledge(discoveries);
+    alert("Discovery Saved!");
 }
 
 function searchKnowledge(){
 
-let search =
-document
-.getElementById("search")
-.value
-.toLowerCase();
+    const search =
+    document.getElementById("search")
+    ?.value
+    .toLowerCase() || "";
 
-let category =
-document
-.getElementById("filter")
-.value;
+    const category =
+    document.getElementById("filter")
+    ?.value || "";
 
-let filtered =
-discoveries.filter(item =>
+    const filtered =
+    discoveries.filter(item =>
 
-(
-item.title.toLowerCase().includes(search)
-||
-item.notes.toLowerCase().includes(search)
-||
-item.tags.toLowerCase().includes(search)
-)
+        (
+            item.title.toLowerCase().includes(search)
+            ||
+            item.notes.toLowerCase().includes(search)
+            ||
+            item.tags.toLowerCase().includes(search)
+        )
 
-&&
+        &&
 
-(
-category === ""
-||
-item.category === category
-)
+        (
+            category === ""
+            ||
+            item.category === category
+        )
+    );
 
-);
-
-displayKnowledge(filtered);
+    displayKnowledge(filtered);
 }
 
 function displayKnowledge(data){
 
-const area =
-document.getElementById("results");
+    const area =
+    document.getElementById("results");
 
-if(!area) return;
+    if(!area) return;
 
-area.innerHTML = "";
+    area.innerHTML = "";
 
-data.forEach(item=>{
+    data.forEach(item=>{
 
-area.innerHTML +=
-`
-<div class="discovery">
+        area.innerHTML += `
+        <div class="discovery">
 
-<h2>${item.title}</h2>
+            <h2>${item.title}</h2>
 
-<p><b>Category:</b>
-${item.category}</p>
+            <p>
+                <strong>Category:</strong>
+                ${item.category}
+            </p>
 
-<p><b>Tags:</b>
-${item.tags}</p>
+            <p>
+                <strong>Tags:</strong>
+                ${item.tags}
+            </p>
 
-<p>${item.notes}</p>
+            <p>${item.notes}</p>
 
-<p>
+            <p>
+                <strong>Attachments:</strong>
+                ${item.attachments.join(", ")}
+            </p>
 
-<b>Attachments:</b>
-
-${item.attachments.join(", ")}
-
-</p>
-
-</div>
-`;
-});
+        </div>
+        `;
+    });
 }
 
 function loadDashboard(){
 
-let total =
-document.getElementById(
-"totalDiscoveries"
-);
+    const total =
+    document.getElementById("totalDiscoveries");
 
-if(!total) return;
+    if(!total) return;
 
-total.innerText =
-discoveries.length;
+    total.innerText =
+    discoveries.length;
 
-let unique =
-new Set(
-discoveries.map(x=>x.category)
-);
+    const categories =
+    new Set(
+        discoveries.map(d=>d.category)
+    );
 
-document.getElementById(
-"categoryCount"
-).innerText =
-unique.size;
+    document.getElementById(
+        "categoryCount"
+    ).innerText =
+    categories.size;
 }
 
-loadKnowledge();
+displayKnowledge(discoveries);
 loadDashboard();
-`
