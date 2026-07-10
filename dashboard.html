@@ -21,7 +21,7 @@ content="width=device-width, initial-scale=1.0">
 
 <h1>📊 Dashboard</h1>
 
-<p>Jungle Jotter Analytics</p>
+<p>Knowledge Base Analytics</p>
 
 </header>
 
@@ -61,7 +61,7 @@ content="width=device-width, initial-scale=1.0">
 0
 </h2>
 
-<p>Favorites</p>
+<p>Favorite Tickets</p>
 
 </div>
 
@@ -80,4 +80,151 @@ None
 <h2 id="topTicket">
 None
 </h2>
+
+<p>Most Helpful Ticket</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Recent Discoveries</h2>
+
+<div id="recentTickets">
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.addEventListener(
+"DOMContentLoaded",
+loadDashboard
+);
+
+function loadDashboard(){
+
+const discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+document.getElementById(
+"totalDiscoveries"
+).textContent =
+discoveries.length;
+
+const favorites =
+discoveries.filter(
+x => x.favorite
+);
+
+document.getElementById(
+"favoriteCount"
+).textContent =
+favorites.length;
+
+const categories =
+{};
+
+discoveries.forEach(item=>{
+
+if(!categories[item.category]){
+
+categories[item.category] = 0;
+
+}
+
+categories[item.category]++;
+
+});
+
+let highestCount = 0;
+let topCategory = "None";
+
+for(
+const category
+in categories
+){
+
+if(
+categories[category]
+>
+highestCount
+){
+
+highestCount =
+categories[category];
+
+topCategory =
+category;
+
+}
+
+}
+
+document.getElementById(
+"topCategory"
+).textContent =
+topCategory;
+
+let topTicket = "None";
+
+if(discoveries.length){
+
+const best =
+discoveries.reduce(
+(a,b)=>
+a.rating > b.rating
+? a
+: b
+);
+
+topTicket =
+best.title;
+}
+
+document.getElementById(
+"topTicket"
+).textContent =
+topTicket;
+
+const recent =
+document.getElementById(
+"recentTickets"
+);
+
+recent.innerHTML = "";
+
+discoveries
+.slice()
+.reverse()
+.slice(0,5)
+.forEach(item=>{
+
+recent.innerHTML +=
+`
+<div class="discovery">
+
+<h3>${item.title}</h3>
+
+<p>${item.category}</p>
+
+</div>
+`;
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
 
