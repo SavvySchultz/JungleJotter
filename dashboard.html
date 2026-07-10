@@ -1,47 +1,211 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-<link rel="stylesheet" href="styles.css">
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css">
+
 </head>
 
 <body>
 
 <header>
-<h1>📊 Dashboard</h1>
+
+    <h1>
+        📊 Dashboard
+    </h1>
+
+    <p>
+        Jungle Jotter Analytics
+    </p>
+
 </header>
 
 <nav>
-<a href="index.html">Add Discovery</a>
-<a href="knowledge.html">Knowledge Base</a>
-<a href="dashboard.html">Dashboard</a>
+
+    .html">
+        Add Discovery
+    </a>
+
+    knowledge.html">
+        Knowledge Base
+    </a>
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
 </nav>
 
 <div class="container">
 
-<div class="dashboard-grid">
+    <div class="dashboard-grid">
 
-<div class="stat-card">
-<h2 id="totalDiscoveries">0</h2>
-<p>Total Discoveries</p>
+        <div class="stat-card">
+
+            <h2 id="totalDiscoveries">
+                0
+            </h2>
+
+            <p>
+                Total Discoveries
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2 id="favoritesCount">
+                0
+            </h2>
+
+            <p>
+                Favorites
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2 id="topCategory">
+                None
+            </h2>
+
+            <p>
+                Top Category
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2 id="topTicket">
+                None
+            </h2>
+
+            <p>
+                Most Helpful Ticket
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div class="stat-card">
-<h2 id="categoryCount">0</h2>
-<p>Categories</p>
-</div>
+<script>
 
-<div class="stat-card">
-<h2 id="topTicket">None</h2>
-<p>Top Rated Ticket</p>
-</div>
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-</div>
+        const discoveries =
+            JSON.parse(
+                localStorage.getItem(
+                    "discoveries"
+                )
+            ) || [];
 
-</div>
+        document.getElementById(
+            "totalDiscoveries"
+        ).innerText =
+            discoveries.length;
 
-<script src="app.js"></script>
+        const favorites =
+            discoveries.filter(
+                x => x.favorite
+            );
+
+        document.getElementById(
+            "favoritesCount"
+        ).innerText =
+            favorites.length;
+
+        const categoryMap = {};
+
+        discoveries.forEach(item => {
+
+            categoryMap[
+                item.category
+            ] =
+            (
+                categoryMap[
+                    item.category
+                ] || 0
+            ) + 1;
+
+        });
+
+        let topCategory =
+            "None";
+
+        let highest =
+            0;
+
+        for (
+            const cat
+            in categoryMap
+        ) {
+
+            if (
+                categoryMap[
+                    cat
+                ] > highest
+            ) {
+
+                highest =
+                    categoryMap[
+                        cat
+                    ];
+
+                topCategory =
+                    cat;
+            }
+        }
+
+        document.getElementById(
+            "topCategory"
+        ).innerText =
+            topCategory;
+
+        let topTicket =
+            "None";
+
+        if (
+            discoveries.length > 0
+        ) {
+
+            discoveries.sort(
+                (a,b)=>
+                b.rating -
+                a.rating
+            );
+
+            topTicket =
+                discoveries[0]
+                .title;
+        }
+
+        document.getElementById(
+            "topTicket"
+        ).innerText =
+            topTicket;
+
+    }
+);
+
+</script>
 
 </body>
+
 </html>
