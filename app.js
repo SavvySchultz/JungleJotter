@@ -330,3 +330,305 @@ function saveDiscovery(){
     window.location.href =
     "knowledge.html";
 }
+/* ====================================
+   KNOWLEDGE BASE
+==================================== */
+
+function loadKnowledgeBase(){
+
+    discoveries =
+    JSON.parse(
+        localStorage.getItem(
+            "discoveries"
+        )
+    ) || [];
+
+    displayKnowledge(
+        discoveries
+    );
+}
+
+/* ====================================
+   SEARCH
+==================================== */
+
+function searchKnowledge(){
+
+    discoveries =
+    JSON.parse(
+        localStorage.getItem(
+            "discoveries"
+        )
+    ) || [];
+
+    const search =
+    document
+    .getElementById(
+        "search"
+    )
+    ?.value
+    .toLowerCase() || "";
+
+    const category =
+    document
+    .getElementById(
+        "filter"
+    )
+    ?.value || "";
+
+    const filtered =
+    discoveries.filter(item=>{
+
+        const text =
+
+        (
+            item.title +
+            " " +
+            item.category +
+            " " +
+            item.tags +
+            " " +
+            item.notes
+        ).toLowerCase();
+
+        return(
+
+            text.includes(
+                search
+            )
+
+            &&
+
+            (
+                category === ""
+
+                ||
+
+                item.category ===
+                category
+            )
+
+        );
+    });
+
+    displayKnowledge(
+        filtered
+    );
+}
+
+/* ====================================
+   DISPLAY
+==================================== */
+
+function displayKnowledge(data){
+
+    const results =
+    document.getElementById(
+        "results"
+    );
+
+    if(!results) return;
+
+    if(data.length === 0){
+
+        results.innerHTML =
+
+        `
+        <div class="card">
+            <h2>No Results Found</h2>
+        </div>
+        `;
+
+        return;
+    }
+
+    results.innerHTML = "";
+
+    data.forEach(item=>{
+
+        results.innerHTML +=
+
+        `
+        <div class="discovery">
+
+            <h2>
+                ${item.title}
+            </h2>
+
+            <p>
+                <strong>
+                Category:
+                </strong>
+
+                ${item.category}
+            </p>
+
+            <p>
+                <strong>
+                Tags:
+                </strong>
+
+                ${item.tags}
+            </p>
+
+            <p>
+                <strong>
+                Helpful:
+                </strong>
+
+                ${item.rating}
+            </p>
+
+            <p>
+                ${item.created}
+            </p>
+
+            <div class="button-row">
+
+                <button
+                onclick="
+                openTicket(
+                ${item.id}
+                )
+                ">
+                🔍 Open
+                </button>
+
+                <button
+                onclick="
+                helpfulVote(
+                ${item.id}
+                )
+                ">
+                👍 Helpful
+                </button>
+
+                <button
+                onclick="
+                toggleFavorite(
+                ${item.id}
+                )
+                ">
+                ${
+                    item.favorite
+                    ? "⭐ Favorite"
+                    : "☆ Favorite"
+                }
+                </button>
+
+                <button
+                onclick="
+                deleteDiscovery(
+                ${item.id}
+                )
+                ">
+                🗑 Delete
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+}
+
+/* ====================================
+   TICKET OPEN
+==================================== */
+
+function openTicket(id){
+
+    const ticket =
+    discoveries.find(
+        x =>
+        x.id === id
+    );
+
+    localStorage.setItem(
+        "selectedTicket",
+        JSON.stringify(ticket)
+    );
+
+    location.href =
+    "ticket.html";
+}
+
+/* ====================================
+   HELPFUL
+==================================== */
+
+function helpfulVote(id){
+
+    discoveries.forEach(item=>{
+
+        if(item.id === id){
+
+            item.rating++;
+        }
+
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(
+            discoveries
+        )
+    );
+
+    loadKnowledgeBase();
+}
+
+/* ====================================
+   FAVORITE
+==================================== */
+
+function toggleFavorite(id){
+
+    discoveries.forEach(item=>{
+
+        if(item.id === id){
+
+            item.favorite =
+            !item.favorite;
+        }
+
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(
+            discoveries
+        )
+    );
+
+    loadKnowledgeBase();
+}
+
+/* ====================================
+   DELETE
+==================================== */
+
+function deleteDiscovery(id){
+
+    const answer =
+    confirm(
+        "Delete discovery?"
+    );
+
+    if(!answer) return;
+
+    discoveries =
+    discoveries.filter(
+        item =>
+        item.id !== id
+    );
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(
+            discoveries
+        )
+    );
+
+    loadKnowledgeBase();
+}
