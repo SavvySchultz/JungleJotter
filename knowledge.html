@@ -52,3 +52,316 @@ onkeyup="searchKnowledge()">
 
 <select
 id="filter"
+onchange="searchKnowledge()">
+
+<option value="">
+All Categories
+</option>
+
+<option>Microsoft 365</option>
+<option>Outlook</option>
+<option>Teams</option>
+<option>OneDrive</option>
+<option>SharePoint</option>
+<option>Active Directory</option>
+<option>VPN</option>
+<option>Network</option>
+<option>Printer</option>
+<option>Security</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+<div id="results">
+
+</div>
+
+</div>
+
+.js"></script>
+
+<script>
+
+function loadKnowledgeBase(){
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+displayKnowledge(
+discoveries
+);
+
+}
+
+function searchKnowledge(){
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+const search =
+document.getElementById(
+"search"
+).value.toLowerCase();
+
+const category =
+document.getElementById(
+"filter"
+).value;
+
+const filtered =
+discoveries.filter(item=>{
+
+const text =
+
+(
+item.title +
+" " +
+item.category +
+" " +
+item.tags +
+" " +
+item.notes
+).toLowerCase();
+
+return(
+
+text.includes(search)
+
+&&
+
+(
+category === ""
+||
+item.category === category
+)
+
+);
+
+});
+
+displayKnowledge(
+filtered
+);
+}
+
+function displayKnowledge(data){
+
+const results =
+document.getElementById(
+"results"
+);
+
+results.innerHTML = "";
+
+if(data.length === 0){
+
+results.innerHTML =
+
+`
+<div class="card">
+<h2>No Discoveries Found</h2>
+</div>
+`;
+
+return;
+}
+
+data.forEach(item=>{
+
+results.innerHTML +=
+
+`
+<div class="discovery">
+
+<h2>
+${item.title}
+</h2>
+
+<p>
+<strong>Category:</strong>
+${item.category}
+</p>
+
+<p>
+<strong>Tags:</strong>
+${item.tags}
+</p>
+
+<p>
+<strong>Helpful Votes:</strong>
+${item.rating}
+</p>
+
+<p>
+${item.created}
+</p>
+
+<div class="button-row">
+
+<button onclick="openTicket(${item.id})">
+🔍 Open
+</button>
+
+<button onclick="voteHelpful(${item.id})">
+👍 Helpful
+</button>
+
+<button onclick="toggleFavorite(${item.id})">
+
+${item.favorite
+? "⭐ Favorite"
+: "☆ Favorite"}
+
+</button>
+
+<button onclick="deleteDiscovery(${item.id})">
+🗑 Delete
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+function voteHelpful(id){
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+discoveries.forEach(item=>{
+
+if(item.id === id){
+
+item.rating++;
+
+}
+
+});
+
+localStorage.setItem(
+"discoveries",
+JSON.stringify(
+discoveries
+)
+);
+
+loadKnowledgeBase();
+}
+
+function toggleFavorite(id){
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+discoveries.forEach(item=>{
+
+if(item.id === id){
+
+item.favorite =
+!item.favorite;
+
+}
+
+});
+
+localStorage.setItem(
+"discoveries",
+JSON.stringify(
+discoveries
+)
+);
+
+loadKnowledgeBase();
+}
+
+function deleteDiscovery(id){
+
+if(
+!confirm(
+"Delete discovery?"
+)
+){
+
+return;
+}
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+discoveries =
+discoveries.filter(
+x => x.id !== id
+);
+
+localStorage.setItem(
+"discoveries",
+JSON.stringify(
+discoveries
+)
+);
+
+loadKnowledgeBase();
+}
+
+function openTicket(id){
+
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
+
+const ticket =
+discoveries.find(
+x => x.id === id
+);
+
+localStorage.setItem(
+"selectedTicket",
+JSON.stringify(
+ticket
+)
+);
+
+window.location.href =
+"ticket.html";
+}
+
+document.addEventListener(
+"DOMContentLoaded",
+loadKnowledgeBase
+);
+
+</script>
+
+</body>
+</html>
