@@ -1,10 +1,10 @@
 let discoveries =
-JSON.parse(localStorage.getItem("discoveries")) || [];
+    JSON.parse(localStorage.getItem("discoveries")) || [];
 
 let originalNotes = "";
 
 /* -------------------- */
-/* AI CLEAN NOTES */
+/* SMART CLEAN */
 /* -------------------- */
 
 function cleanNotes() {
@@ -14,8 +14,7 @@ function cleanNotes() {
 
     if (!notesBox) return;
 
-    const notes =
-        notesBox.value.trim();
+    let notes = notesBox.value.trim();
 
     if (!notes) {
         alert("Enter notes first");
@@ -24,41 +23,60 @@ function cleanNotes() {
 
     originalNotes = notes;
 
-    const lines =
-        notes
-            .split(/\n+/)
-            .filter(line => line.trim());
+    let lines =
+        notes.split(/\n+/)
+        .filter(line => line.trim());
 
-    let output = `
-Issue Investigation
+    let summary = lines[0];
 
-Issue Summary:
-${lines[0]}
+    let troubleshooting = [];
+    let resolution = [];
 
-Troubleshooting Steps:
-`;
+    lines.forEach(line => {
 
-    lines.forEach((line, index) => {
-        output += `${index + 1}. ${line}\n`;
+        const lower =
+            line.toLowerCase();
+
+        if (
+            lower.includes("fixed") ||
+            lower.includes("resolved") ||
+            lower.includes("working") ||
+            lower.includes("repair") ||
+            lower.includes("enabled") ||
+            lower.includes("reset")
+        ) {
+            resolution.push(line);
+        } else {
+            troubleshooting.push(line);
+        }
+
     });
 
-    output += `
+    notesBox.value =
+`Issue Investigation
+
+Issue Summary:
+${summary}
+
+Troubleshooting Steps:
+${troubleshooting.map((x,i)=>`${i + 1}. ${x}`).join("\n")}
 
 Resolution:
-Issue resolved after troubleshooting.
+${resolution.length
+? resolution.join("\n")
+: "Issue resolved after troubleshooting."
+}
 
 Verification:
-✅ Tested successfully
-✅ User confirmed functionality
+✅ Functionality Tested
+✅ User Confirmed Resolution
 
 Suggested Checks:
 • Verify permissions
-• Verify MFA
-• Check account lockouts
+• Validate MFA
+• Check account status
 • Review logs
 `;
-
-    notesBox.value = output;
 }
 
 /* -------------------- */
@@ -82,38 +100,30 @@ function undoCleanNotes() {
 function saveDiscovery() {
 
     const title =
-        document.getElementById("title").value;
+        document.getElementById("title").value.trim();
 
     const category =
         document.getElementById("category").value;
 
     const tags =
-        document.getElementById("tags").value;
+        document.getElementById("tags").value.trim();
 
     const notes =
-        document.getElementById("notes").value;
+        document.getElementById("notes").value.trim();
 
     if (!title || !notes) {
-
         alert("Title and Notes required");
-
         return;
     }
 
     discoveries.push({
-
         id: Date.now(),
-
         title,
         category,
         tags,
         notes,
-
         rating: 0,
-
-        date:
-        new Date().toLocaleDateString()
-
+        date: new Date().toLocaleDateString()
     });
 
     localStorage.setItem(
@@ -134,28 +144,29 @@ function searchKnowledge() {
 
     const search =
         document.getElementById("search")
-        ?.value.toLowerCase() || "";
+            ?.value.toLowerCase() || "";
 
     const category =
         document.getElementById("filter")
-        ?.value || "";
+            ?.value || "";
 
     const filtered =
         discoveries.filter(item => {
 
-            const searchable = `
-            ${item.title}
-            ${item.notes}
-            ${item.tags}
-            ${item.category}
-            `.toLowerCase();
+            const searchable =
+                `
+                ${item.title}
+                ${item.notes}
+                ${item.tags}
+                ${item.category}
+                `.toLowerCase();
 
-            return searchable.includes(search) &&
+            return searchable.includes(search)
+                &&
                 (
                     category === "" ||
                     item.category === category
                 );
-
         });
 
     displayKnowledge(filtered);
@@ -177,7 +188,6 @@ function displayKnowledge(data) {
     data.forEach(item => {
 
         area.innerHTML += `
-
         <div class="discovery">
 
             <h2>${item.title}</h2>
@@ -188,7 +198,7 @@ function displayKnowledge(data) {
 
             <p><b>Date:</b> ${item.date}</p>
 
-            <p><b>Helpful Votes:</b> ${item.rating || 0}</p>
+            <p><b>Helpful Votes:</b> ${item.rating}</p>
 
             <button onclick="openTicket(${item.id})">
                 🔍 View Ticket
@@ -198,10 +208,14 @@ function displayKnowledge(data) {
                 👍 Helpful
             </button>
 
-        </div>
+            <button onclick="deleteTicket(${item.id})">
+                🗑 Delete
+            </button>
 
+        </div>
         `;
     });
+
 }
 
 /* -------------------- */
@@ -211,29 +225,24 @@ function displayKnowledge(data) {
 function openTicket(id) {
 
     const ticket =
-        discoveries.find(
-            x => x.id === id
-        );
+        discoveries.find(x => x.id === id);
 
     localStorage.setItem(
         "selectedTicket",
         JSON.stringify(ticket)
     );
 
-    window.location.href =
-        "ticket.html";
+    window.location.href = "ticket.html";
 }
 
 /* -------------------- */
-/* HELPFUL */
+/* VOTE */
 /* -------------------- */
 
 function voteTicket(id) {
 
     const ticket =
-        discoveries.find(
-            x => x.id === id
-        );
+        discoveries.find(x => x.id === id);
 
     if (!ticket) return;
 
@@ -244,49 +253,28 @@ function voteTicket(id) {
         JSON.stringify(discoveries)
     );
 
-    location.reload();
+    searchKnowledge();
 }
 
 /* -------------------- */
-/* LOAD TICKET */
+/* DELETE */
 /* -------------------- */
 
-function loadTicket() {
+function deleteTicket(id) {
 
-    const ticket =
-        JSON.parse(
-            localStorage.getItem(
-                "selectedTicket"
-            )
+    discoveries =
+        discoveries.filter(
+            x => x.id !== id
         );
 
-    if (!ticket) return;
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
 
-    document.getElementById(
-        "ticketTitle"
-    ).innerText =
-        ticket.title;
+    searchKnowledge();
+}
 
-    document.getElementById(
-        "ticketDetails"
-    ).innerHTML = `
+/* -------------------- */
+/* EXPORT */
 
-    <p><b>Category:</b> ${ticket.category}</p>
-
-    <p><b>Tags:</b> ${ticket.tags}</p>
-
-    <p><b>Date:</b> ${ticket.date}</p>
-
-    <p><b>Helpful Votes:</b> ${ticket.rating}</p>
-
-    <h3>Resolution Notes</h3>
-
-    <pre>${ticket.notes}</pre>
-
-    `;
-
-    const related =
-        discoveries.filter(
-            x =>
-            x.id !== ticket.id &&
-            x.category === ticket.category
