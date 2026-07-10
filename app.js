@@ -1,155 +1,332 @@
-<!DOCTYPE html>
-<html lang="en">
+/* ================================
+   JUNGLE JOTTER PRO
+================================ */
 
-<head>
+let discoveries =
+JSON.parse(
+localStorage.getItem(
+"discoveries"
+)
+) || [];
 
-    <meta charset="UTF-8">
+let originalNotes = "";
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+/* ================================
+   FILE IMPORT
+================================ */
 
-    <title>Ticket Details</title>
+function loadFile(){
 
-    <link
-        rel="stylesheet"
-        href="styles.css">
+    const file =
+    document.getElementById(
+    "ticketFile"
+    ).files[0];
 
-</head>
+    if(!file){
 
-<body>
+        alert(
+        "Choose a file first."
+        );
 
-<header>
+        return;
+    }
 
-    <h1 id="ticketTitle">
-        Ticket Details
-    </h1>
+    const reader =
+    new FileReader();
 
-</header>
+    reader.onload =
+    function(e){
 
-<nav>
+        document.getElementById(
+        "notes"
+        ).value =
+        e.target.result;
+    };
 
-    <a href="index.html">
-        Add Discovery
-    </a>
+    reader.readAsText(file);
+}
 
-    <a href="knowledge.html">
-        Knowledge Base
-    </a>
+/* ================================
+   SMART AI CLEAN
+================================ */
 
-    <a href="dashboard.html">
-        Dashboard
-    </a>
+function smartClean(){
 
-</nav>
+    con*t notesBox =
+    document.getEleme*tById(
+    "notes"
+    );
 
-<div class="container">
+    if(*notesBox) return;
 
-    <div class="card">
+    const raw =*    notesBox.value.trim();
 
-        <div id="ticketDetails">
+    if*!raw){
 
-        </div>
+        alert(
+        "En*er notes first."
+        );
 
-    </div>
+     *  return;
+    }
 
-</div>
+    originalNotes*= raw;
 
-<script>
+    const lines =
+    raw
+*   .split(/\n+/)
+    .map(
+    x =* x.trim()
+    )
+    .filter(Boolea*);
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+    const summary =
+    lines[0];
 
-        const ticket =
-            JSON.parse(
-                localStorage.getItem(
-                    "selectedTicket"
-                )
-            );
+    const troubleshooting =
+  * [];
 
-        if (!ticket) {
+    const resolution =
+    [];
 
-            document
-                .getElementById(
-                    "ticketDetails"
-                )
-                .innerHTML =
+    const verification =
+    []*
 
-                `<h2>
-                    No Ticket Selected
-                </h2>`;
+    lines.forEach(line=>{
 
-            return;
+     *  const lower =
+        line.toLow*rCase();
+
+        if(
+
+           *lower.includes(
+            "fixed*
+            ) ||
+
+            low*r.includes(
+            "resolved"*            ) ||
+
+            lowe*.includes(
+            "working"
+ *          ) ||
+
+            lower.*ncludes(
+            "restored"
+  *         ) ||
+
+            lower.i*cludes(
+            "reinstalled"
+*           ) ||
+
+            lower*includes(
+            "repair"
+   *        )
+
+        ){
+
+           *resolution.push(
+            line
+*           );
         }
 
-        document
-            .getElementById(
-                "ticketTitle"
-            )
-            .innerText =
-            ticket.title;
+        e*se if(
 
-        document
-            .getElementById(
-                "ticketDetails"
-            )
-            .innerHTML =
+            lower.includes*
+            "confirmed"
+         *  ) ||
 
-            `
-            <h2>
-                ${ticket.title}
-            </h2>
+            lower.includes*
+            "tested"
+            * ||
 
-            <hr>
+            lower.includes(
+ *          "verified working"
+     *      )
 
-            <p>
-                <strong>
-                    Category:
-                </strong>
+        ){
 
-                ${ticket.category}
-            </p>
+            v*rification.push(
+            line
+            );
+        }
 
-            <p>
-                <strong>
-                    Tags:
-                </strong>
+        else{
 
-                ${ticket.tags}
-            </p>
+            troubleshooting.push(
+            line
+            );
+        }
 
-            <p>
-                <strong>
-                    Helpful Votes:
-                </strong>
+    });
 
-                ${ticket.rating}
-            </p>
+    notesBox.value =
 
-            <p>
-                <strong>
-                    Created:
-                </strong>
+`Issue Summary
+${summary}
 
-                ${ticket.created}
-            </p>
+Symptoms
+${summary}
 
-            <hr>
+Troubleshooting Steps
+${troubleshooting.map(
+(step,index)=>
+`${index+1}. ${step}`
+).join("\n")}
 
-            <h3>
-                Resolution Notes
-            </h3>
+Resolution
+${resolution.length
+? resolution.join("\n")
+: "Issue resolved."
+}
 
-            <pre>
-${ticket.notes}
-            </pre>
-            `;
+Verification
+${verification.length
+? verification.join("\n")
+: "User confirmed functionality."
+}`;
+}
+
+/* ================================
+   UNDO
+================================ */
+
+function undoSmartClean(){
+
+    document.getElementById(
+    "notes"
+    ).value =
+    originalNotes;
+}
+
+/* ================================
+   AUTO TAGS
+================================ */
+
+function autoTags(tex*){
+
+    const tags =
+    [];
+
+    const lower =
+    text.toLowerCase();
+
+    if(lower.includes("outlook"))
+    tags.push("Outlook");
+
+    if(lower.includes("teams"))
+    tags.push("Teams");
+
+    if(lower.includes("vpn"))
+    tags.push("VPN");
+
+    if(lower.includes("sharepoint"))
+    tags.push("SharePoint");
+
+    if(lower.includes("onedrive"))
+    tags.push("OneDrive");
+
+    if(lower.includes("password"))
+    tags.push("Password");
+
+    if(lower.includes("mfa"))
+    tags.push("MFA");
+
+    return tags.join(",");
+}
+
+/* ================================
+   SAVE
+================================ */
+
+function saveDiscovery(){
+*    const title =
+    document.get*lementById(
+    "title"
+    ).valu*.trim();
+
+    const category =
+   *document.getElementById(
+    "cate*ory"
+    ).value;
+
+    let tags =
+*   document.getElementById(
+    "t*gs"
+    ).value.trim();
+
+    const*notes =
+    document.getElementByI*(
+    "notes"
+    ).value.trim();
+*    if(!title){
+
+        alert(
+  *     "Issue Title required."
+     *  );
+
+        return;
     }
-);
 
-</script>
+    i*(!notes){
 
-</body>
+        alert(
+        *Notes required."
+        );
 
-</html>
+     *  return;
+    }
+
+    if(!tags){
+
+ *      tags =
+        autoTags(
+   *    notes
+        );
+    }
+
+    const discovery = {
+
+        id:
+        Date.now(),
+
+        title:
+        title,
+
+        category:
+        category,
+
+        tags:
+        tags,
+
+        notes:
+        notes,
+
+        favorite:
+        false,
+
+        rating:
+        0,
+
+        created:
+        new Date()
+        .toLocaleString()
+
+    };
+
+    discoveries.push(
+    discovery
+    );
+
+    localStorage.setItem(
+
+    "discoveries",
+
+    JSON.stringify(
+    discoveries
+    )
+
+    );
+
+    window.location.href =
+    "knowledge.html";
+}
