@@ -1,11 +1,17 @@
+/* =====================================
+   JUNGLE JOTTER
+===================================== */
+
 let discoveries =
-    JSON.parse(localStorage.getItem("discoveries")) || [];
+    JSON.parse(
+        localStorage.getItem("discoveries")
+    ) || [];
 
 let originalNotes = "";
 
-/* -------------------- */
-/* SMART CLEAN */
-/* -------------------- */
+/* =====================================
+   SMART CLEAN
+===================================== */
 
 function cleanNotes() {
 
@@ -14,7 +20,8 @@ function cleanNotes() {
 
     if (!notesBox) return;
 
-    let notes = notesBox.value.trim();
+    const notes =
+        notesBox.value.trim();
 
     if (!notes) {
         alert("Enter notes first");
@@ -23,79 +30,91 @@ function cleanNotes() {
 
     originalNotes = notes;
 
-    let lines =
-        notes.split(/\n+/)
-        .filter(line => line.trim());
+    const lines =
+        notes
+            .split(/\n+/)
+            .filter(line => line.trim());
 
-    let summary = lines[0];
+    let issueSummary =
+        lines[0] || "";
 
     let troubleshooting = [];
     let resolution = [];
 
     lines.forEach(line => {
 
-        const lower =
+        let lower =
             line.toLowerCase();
 
         if (
             lower.includes("fixed") ||
             lower.includes("resolved") ||
             lower.includes("working") ||
-            lower.includes("repair") ||
+            lower.includes("reset") ||
             lower.includes("enabled") ||
-            lower.includes("reset")
+            lower.includes("removed") ||
+            lower.includes("installed")
         ) {
             resolution.push(line);
-        } else {
+        }
+        else {
             troubleshooting.push(line);
         }
 
     });
 
     notesBox.value =
+
 `Issue Investigation
 
 Issue Summary:
-${summary}
+${issueSummary}
 
 Troubleshooting Steps:
-${troubleshooting.map((x,i)=>`${i + 1}. ${x}`).join("\n")}
+
+${troubleshooting.map(
+    (step,index)=>
+    `${index+1}. ${step}`
+).join("\n")}
 
 Resolution:
+
 ${resolution.length
 ? resolution.join("\n")
 : "Issue resolved after troubleshooting."
 }
 
 Verification:
-✅ Functionality Tested
-✅ User Confirmed Resolution
+✅ Tested successfully
+✅ User confirmed functionality
 
 Suggested Checks:
 • Verify permissions
-• Validate MFA
-• Check account status
+• Verify MFA
+• Check account lockouts
 • Review logs
 `;
 }
 
-/* -------------------- */
-/* UNDO */
-/* -------------------- */
+/* =====================================
+   UNDO
+===================================== */
 
 function undoCleanNotes() {
 
     const notesBox =
         document.getElementById("notes");
 
-    if (notesBox) {
-        notesBox.value = originalNotes;
+    if(notesBox){
+
+        notesBox.value =
+            originalNotes;
     }
 }
 
-/* -------------------- */
-/* SAVE */
-/* -------------------- */
+/* =====================================
+   SAVE DISCOVERY
+===================================== */
 
 function saveDiscovery() {
 
@@ -111,170 +130,127 @@ function saveDiscovery() {
     const notes =
         document.getElementById("notes").value.trim();
 
-    if (!title || !notes) {
-        alert("Title and Notes required");
+    if(!title || !notes){
+
+        alert(
+            "Title and Notes are required."
+        );
+
         return;
     }
 
-    discoveries.push({
+    const newDiscovery = {
+
         id: Date.now(),
-        title,
-        category,
-        tags,
-        notes,
+
+        title: title,
+
+        category: category,
+
+        tags: tags,
+
+        notes: notes,
+
         rating: 0,
-        date: new Date().toLocaleDateString()
-    });
+
+        date:
+            new Date()
+            .toLocaleDateString()
+
+    };
+
+    discoveries.push(
+        newDiscovery
+    );
 
     localStorage.setItem(
         "discoveries",
         JSON.stringify(discoveries)
     );
 
-    alert("Discovery Saved!");
+    alert(
+        "Discovery Saved Successfully!"
+    );
 
-    location.reload();
+    document.getElementById(
+        "title"
+    ).value = "";
+
+    document.getElementById(
+        "tags"
+    ).value = "";
+
+    document.getElementById(
+        "notes"
+    ).value = "";
 }
 
-/* -------------------- */
-/* SEARCH */
-/* -------------------- */
+/* =====================================
+   KNOWLEDGE SEARCH
+===================================== */
 
 function searchKnowledge() {
 
+    const searchBox =
+        document.getElementById(
+            "search"
+        );
+
+    const filterBox =
+        document.getElementById(
+            "filter"
+        );
+
     const search =
-        document.getElementById("search")
-            ?.value.toLowerCase() || "";
+        searchBox
+        ? searchBox.value.toLowerCase()
+        : "";
 
     const category =
-        document.getElementById("filter")
-            ?.value || "";
+        filterBox
+        ? filterBox.value
+        : "";
 
     const filtered =
         discoveries.filter(item => {
 
-            const searchable =
-                `
-                ${item.title}
-                ${item.notes}
-                ${item.tags}
-                ${item.category}
-                `.toLowerCase();
-
-            return searchable.includes(search)
-                &&
+            const text =
                 (
-                    category === "" ||
-                    item.category === category
-                );
+                    item.title +
+                    " " +
+                    item.notes +
+                    " " +
+                    item.tags +
+                    " " +
+                    item.category
+                )
+                .toLowerCase();
+
+            const matchSearch =
+                text.includes(search);
+
+            const matchCategory =
+                category === "" ||
+                item.category === category;
+
+            return (
+                matchSearch &&
+                matchCategory
+            );
         });
 
-    displayKnowledge(filtered);
+    displayKnowledge(
+        filtered
+    );
 }
 
-/* -------------------- */
-/* DISPLAY */
-/* -------------------- */
+/* =====================================
+   DISPLAY KNOWLEDGE
+===================================== */
 
 function displayKnowledge(data) {
 
     const area =
-        document.getElementById("results");
+        document.getElementById(
 
-    if (!area) return;
-
-    area.innerHTML = "";
-
-    data.forEach(item => {
-
-        area.innerHTML += `
-        <div class="discovery">
-
-            <h2>${item.title}</h2>
-
-            <p><b>Category:</b> ${item.category}</p>
-
-            <p><b>Tags:</b> ${item.tags}</p>
-
-            <p><b>Date:</b> ${item.date}</p>
-
-            <p><b>Helpful Votes:</b> ${item.rating}</p>
-
-            <button onclick="openTicket(${item.id})">
-                🔍 View Ticket
-            </button>
-
-            <button onclick="voteTicket(${item.id})">
-                👍 Helpful
-            </button>
-
-            <button onclick="deleteTicket(${item.id})">
-                🗑 Delete
-            </button>
-
-        </div>
-        `;
-    });
-
-}
-
-/* -------------------- */
-/* OPEN TICKET */
-/* -------------------- */
-
-function openTicket(id) {
-
-    const ticket =
-        discoveries.find(x => x.id === id);
-
-    localStorage.setItem(
-        "selectedTicket",
-        JSON.stringify(ticket)
-    );
-
-    window.location.href = "ticket.html";
-}
-
-/* -------------------- */
-/* VOTE */
-/* -------------------- */
-
-function voteTicket(id) {
-
-    const ticket =
-        discoveries.find(x => x.id === id);
-
-    if (!ticket) return;
-
-    ticket.rating++;
-
-    localStorage.setItem(
-        "discoveries",
-        JSON.stringify(discoveries)
-    );
-
-    searchKnowledge();
-}
-
-/* -------------------- */
-/* DELETE */
-/* -------------------- */
-
-function deleteTicket(id) {
-
-    discoveries =
-        discoveries.filter(
-            x => x.id !== id
-        );
-
-    localStorage.setItem(
-        "discoveries",
-        JSON.stringify(discoveries)
-    );
-
-    searchKnowledge();
-}
-
-/* -------------------- */
-/* EXPORT */
 
