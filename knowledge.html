@@ -1,36 +1,26 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta charset="UTF-8">
-
 <title>Knowledge Base</title>
-
-<link rel="stylesheet"
-href="styles.css">
-
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
 <header>
-
 <h1>📚 Knowledge Base</h1>
-
 </header>
 
 <nav>
-
 <a href="index.html">Add Discovery</a>
-
 <a href="knowledge.html">Knowledge Base</a>
-
 <a href="dashboard.html">Dashboard</a>
-
 </nav>
 
 <div class="container">
+
+<div class="card">
 
 <input
 id="search"
@@ -41,25 +31,35 @@ onkeyup="searchKnowledge()">
 id="filter"
 onchange="searchKnowledge()">
 
-<option value="">
-All Categories
-</option>
+<option value="">All Categories</option>
 
 <option>Microsoft 365</option>
 <option>Outlook</option>
 <option>Teams</option>
+<option>OneDrive</option>
+<option>SharePoint</option>
+<option>Active Directory</option>
 <option>VPN</option>
 <option>Network</option>
 <option>Printer</option>
+<option>Security</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Other</option>
 
 </select>
 
+<button onclick="exportKnowledge()">
+📥 Export JSON
+</button>
+
 <div id="results"></div>
+
+</div>
 
 </div>
 
 <script src="app.js"></script>
 
 </body>
-
 </html>
