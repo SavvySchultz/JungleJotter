@@ -1,19 +1,17 @@
-/* =====================================
+/* ==========================================
    JUNGLE JOTTER PRO
-===================================== */
+========================================== */
 
 let discoveries =
     JSON.parse(
-        localStorage.getItem(
-            "discoveries"
-        )
+        localStorage.getItem("discoveries")
     ) || [];
 
 let originalNotes = "";
 
-/* =====================================
+/* ==========================================
    SMART AI CLEAN
-===================================== */
+========================================== */
 
 function smartClean() {
 
@@ -27,27 +25,24 @@ function smartClean() {
 
     if (!raw) {
 
-        alert(
-            "Enter notes first."
-        );
+        alert("Enter notes first.");
 
         return;
     }
 
     originalNotes = raw;
 
-    let lines =
-        raw.split(/\n+/)
-            .map(x => x.trim())
-            .filter(Boolean);
+    const lines =
+        raw
+        .split(/\n+/)
+        .map(line => line.trim())
+        .filter(Boolean);
 
-    let summary =
+    let issueSummary =
         lines[0] || "Issue Reported";
 
     let troubleshooting = [];
-
     let resolution = [];
-
     let verification = [];
 
     lines.forEach(line => {
@@ -59,29 +54,29 @@ function smartClean() {
             lower.includes("fixed") ||
             lower.includes("resolved") ||
             lower.includes("working") ||
-            lower.includes("reset") ||
-            lower.includes("enabled") ||
+            lower.includes("repair") ||
             lower.includes("reinstalled") ||
-            lower.includes("repair")
+            lower.includes("reset") ||
+            lower.includes("enabled")
         ) {
 
             resolution.push(line);
-
         }
 
         else if (
+
             lower.includes("confirmed") ||
-            lower.includes("verified")
+            lower.includes("verified") ||
+            lower.includes("tested")
+
         ) {
 
             verification.push(line);
-
         }
 
         else {
 
             troubleshooting.push(line);
-
         }
 
     });
@@ -91,17 +86,16 @@ function smartClean() {
 `Issue Investigation
 
 Issue Summary:
-${summary}
+${issueSummary}
 
 Symptoms:
-User reported issue related to:
-${summary}
+${issueSummary}
 
 Troubleshooting Steps:
 
 ${troubleshooting.map(
-(index, counter) =>
-`${counter + 1}. ${index}`
+(step,index)=>
+`${index + 1}. ${step}`
 ).join("\n")}
 
 Resolution:
@@ -120,17 +114,18 @@ ${verification.length
 
 Suggested Checks:
 
+• Verify permissions
+• Verify MFA
 • Review logs
-• Validate permissions
-• Validate MFA
 • Verify licensing
 • Check account status
 `;
+
 }
 
-/* =====================================
-   UNDO
-===================================== */
+/* ==========================================
+   UNDO SMART CLEAN
+========================================== */
 
 function undoSmartClean() {
 
@@ -141,20 +136,22 @@ function undoSmartClean() {
         notesBox &&
         originalNotes
     ) {
+
         notesBox.value =
             originalNotes;
     }
+
 }
 
-/* =====================================
+/* ==========================================
    AUTO TAGS
-===================================== */
+========================================== */
 
 function generateTags(text) {
 
-    let tags = [];
+    const tags = [];
 
-    let lower =
+    const lower =
         text.toLowerCase();
 
     if (lower.includes("outlook"))
@@ -169,21 +166,24 @@ function generateTags(text) {
     if (lower.includes("mfa"))
         tags.push("MFA");
 
-    if (lower.includes("password"))
-        tags.push("Password");
-
     if (lower.includes("sharepoint"))
         tags.push("SharePoint");
 
     if (lower.includes("onedrive"))
         tags.push("OneDrive");
 
-    return tags.join(",");
+    if (lower.includes("password"))
+        tags.push("Password");
+
+    if (lower.includes("license"))
+        tags.push("Licensing");
+
+    return tags.join(", ");
 }
 
-/* =====================================
+/* ==========================================
    SAVE DISCOVERY
-===================================== */
+========================================== */
 
 function saveDiscovery() {
 
@@ -192,27 +192,21 @@ function saveDiscovery() {
         .value.trim();
 
     const category =
-        document.getElementById(
-            "category"
-        ).value;
+        document.getElementById("category")
+        .value;
 
     let tags =
-        document.getElementById(
-            "tags"
-        ).value.trim();
+        document.getElementById("tags")
+        .value.trim();
 
     const notes =
-        document.getElementById(
-            "notes"
-        ).value.trim();
+        document.getElementById("notes")
+        .value.trim();
 
-    if (
-        !title ||
-        !notes
-    ) {
+    if (!title || !notes) {
 
         alert(
-            "Title and notes are required."
+            "Title and Notes are required."
         );
 
         return;
@@ -221,17 +215,20 @@ function saveDiscovery() {
     const duplicate =
         discoveries.find(
             x =>
-            x.title.toLowerCase()
-            === title.toLowerCase()
+            x.title.toLowerCase() ===
+            title.toLowerCase()
         );
 
     if (duplicate) {
 
-        alert(
-            "A similar discovery already exists."
-        );
+        if (
+            !confirm(
+                "Similar discovery exists. Save anyway?"
+            )
+        ) {
 
-        return;
+            return;
+        }
     }
 
     if (!tags) {
@@ -244,10 +241,6 @@ function saveDiscovery() {
 
         id: Date.now(),
 
-        favorite: false,
-
-        rating: 0,
-
         title,
 
         category,
@@ -256,59 +249,288 @@ function saveDiscovery() {
 
         notes,
 
+        favorite: false,
+
+        rating: 0,
+
         created:
             new Date()
             .toLocaleString()
 
     };
 
-    discoveries.push(
-        record
-    );
+    discoveries.push(record);
 
     localStorage.setItem(
         "discoveries",
-        JSON.stringify(
-            discoveries
-        )
+        JSON.stringify(discoveries)
     );
 
     alert(
         "Discovery Saved Successfully!"
     );
 
-    document.getElementById(
-        "title"
-    ).value = "";
+    document.getElementById("title")
+        .value = "";
 
-    document.getElementById(
-        "tags"
-    ).value = "";
+    document.getElementById("tags")
+        .value = "";
 
-    document.getElementById(
-        "notes"
-    ).value = "";
+    document.getElementById("notes")
+        .value = "";
 }
 
-/* =====================================
-   LOAD PAGE
-===================================== */
+/* ==========================================
+   SEARCH KNOWLEDGE
+========================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function searchKnowledge() {
 
-        discoveries =
-            JSON.parse(
-                localStorage.getItem(
-                    "discoveries"
-                )
-            ) || [];
+    discoveries =
+        JSON.parse(
+            localStorage.getItem(
+                "discoveries"
+            )
+        ) || [];
 
-        console.log(
-            "Discoveries Loaded:",
-            discoveries.length
-        );
+    const search =
+        document
+        .getElementById("search")
+        ?.value
+        .toLowerCase() || "";
+
+    const category =
+        document
+        .getElementById("filter")
+        ?.value || "";
+
+    const filtered =
+        discoveries.filter(item => {
+
+            const searchable =
+
+                (
+                    item.title +
+                    " " +
+                    item.notes +
+                    " " +
+                    item.tags +
+                    " " +
+                    item.category
+                ).toLowerCase();
+
+            const matchSearch =
+                searchable.includes(search);
+
+            const matchCategory =
+                category === "" ||
+                item.category === category;
+
+            return (
+                matchSearch &&
+                matchCategory
+            );
+
+        });
+
+    displayKnowledge(filtered);
+
+}
+
+/* ==========================================
+   DISPLAY KNOWLEDGE
+========================================== */
+
+function displayKnowledge(data) {
+
+    const results =
+        document.getElementById("results");
+
+    if (!results) return;
+
+    results.innerHTML = "";
+
+    if (data.length === 0) {
+
+        results.innerHTML =
+
+        `
+        <div class="card">
+            <h2>No Discoveries Found</h2>
+        </div>
+        `;
+
+        return;
     }
-);
 
+    data.forEach(item => {
+
+        results.innerHTML +=
+
+        `
+        <div class="discovery">
+
+            <h2>${item.title}</h2>
+
+            <p>
+                <strong>Category:</strong>
+                ${item.category}
+            </p>
+
+            <p>
+                <strong>Tags:</strong>
+                ${item.tags}
+            </p>
+
+            <p>
+                <strong>Helpful Votes:</strong>
+                ${item.rating}
+            </p>
+
+            <p>
+                <strong>Created:</strong>
+                ${item.created}
+            </p>
+
+            <div class="button-row">
+
+                <button
+                    onclick="openTicket(${item.id})">
+                    🔍 View
+                </button>
+
+                <button
+                    onclick="voteTicket(${item.id})">
+                    👍 Helpful
+                </button>
+
+                <button
+                    onclick="toggleFavorite(${item.id})">
+
+                    ${item.favorite
+                        ? "⭐ Saved"
+                        : "☆ Favorite"}
+
+                </button>
+
+                <button
+                    onclick="deleteTicket(${item.id})">
+
+                    🗑 Delete
+
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+
+}
+
+/* ==========================================
+   FAVORITES
+========================================== */
+
+function toggleFavorite(id) {
+
+    discoveries.forEach(item => {
+
+        if (item.id === id) {
+
+            item.favorite =
+                !item.favorite;
+        }
+
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    searchKnowledge();
+
+}
+
+/* ==========================================
+   HELPFUL VOTE
+========================================== */
+
+function voteTicket(id) {
+
+    discoveries.forEach(item => {
+
+        if (item.id === id) {
+
+            item.rating++;
+        }
+
+    });
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    searchKnowledge();
+
+}
+
+/* ==========================================
+   DELETE
+========================================== */
+
+function deleteTicket(id) {
+
+    const answer =
+        confirm(
+            "Delete this discovery?"
+        );
+
+    if (!answer) return;
+
+    discoveries =
+        discoveries.filter(
+            item =>
+            item.id !== id
+        );
+
+    localStorage.setItem(
+        "discoveries",
+        JSON.stringify(discoveries)
+    );
+
+    searchKnowledge();
+
+}
+
+/* ==========================================
+   OPEN TICKET
+========================================== */
+
+function openTicket(id) {
+
+    const ticket =
+        discoveries.find(
+            x => x.id === id
+        );
+
+    if (!ticket) return;
+
+    localStorage.setItem(
+        "selectedTicket",
+        JSON.stringify(ticket)
+    );
+
+    window.location.href =
+        "ticket.html";
+}
+
+/* ==========================================
+   EXPORT
+========================================== */
+
+function exportKnowledge() {
+
+    const blob
