@@ -3,17 +3,17 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <title>Ticket Details</title>
+<title>Ticket Details</title>
 
-    <link
-        rel="stylesheet"
-        href="styles.css">
+<link
+rel="stylesheet"
+href="styles.css">
 
 </head>
 
@@ -21,135 +21,112 @@
 
 <header>
 
-    <h1 id="ticketTitle">
-        Ticket Details
-    </h1>
+<h1>
+🎫 Discovery Details
+</h1>
 
 </header>
 
 <nav>
 
-    <a href="index.html">
-        Add Discovery
-    </a>
+.html">
+🌿 New Discovery
+</a>
 
-    <a href="knowledge.html">
-        Knowledge Base
-    </a>
+">
+📚 Knowledge Base
+</a>
 
-    <a href="dashboard.html">
-        Dashboard
-    </a>
+<a href="dashboard.html">
+📊 Dashboard
+</a>
 
 </nav>
 
 <div class="container">
 
-    <div class="card">
+<div class="card">
 
-        <div id="ticketDetails">
+<h2 id="ticketTitle">
+Loading...
+</h2>
 
-        </div>
+<div id="ticketContent">
 
-    </div>
+</div>
+
+</div>
 
 </div>
 
 <script>
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+"DOMContentLoaded",
+()=>{
 
-        const ticket =
-            JSON.parse(
-                localStorage.getItem(
-                    "selectedTicket"
-                )
-            );
-
-        if (!ticket) {
-
-            document
-                .getElementById(
-                    "ticketDetails"
-                )
-                .innerHTML =
-
-                `<h2>
-                    No Ticket Selected
-                </h2>`;
-
-            return;
-        }
-
-        document
-            .getElementById(
-                "ticketTitle"
-            )
-            .innerText =
-            ticket.title;
-
-        document
-            .getElementById(
-                "ticketDetails"
-            )
-            .innerHTML =
-
-            `
-            <h2>
-                ${ticket.title}
-            </h2>
-
-            <hr>
-
-            <p>
-                <strong>
-                    Category:
-                </strong>
-
-                ${ticket.category}
-            </p>
-
-            <p>
-                <strong>
-                    Tags:
-                </strong>
-
-                ${ticket.tags}
-            </p>
-
-            <p>
-                <strong>
-                    Helpful Votes:
-                </strong>
-
-                ${ticket.rating}
-            </p>
-
-            <p>
-                <strong>
-                    Created:
-                </strong>
-
-                ${ticket.created}
-            </p>
-
-            <hr>
-
-            <h3>
-                Resolution Notes
-            </h3>
-
-            <pre>
-${ticket.notes}
-            </pre>
-            `;
-    }
+const ticket =
+JSON.parse(
+localStorage.getItem(
+"selectedTicket"
+)
 );
+
+if(!ticket){
+
+document.getElementById(
+"ticketContent"
+).innerHTML =
+
+"<h3>No Ticket Found</h3>";
+
+return;
+}
+
+document.getElementById(
+"ticketTitle"
+).innerText =
+ticket.title;
+
+document.getElementById(
+"ticketContent"
+).innerHTML =
+
+`
+<p>
+<strong>Category:</strong>
+${ticket.category}
+</p>
+
+<p>
+<strong>Tags:</strong>
+${ticket.tags}
+</p>
+
+<p>
+<strong>Created:</strong>
+${ticket.created}
+</p>
+
+<p>
+<strong>Helpful Votes:</strong>
+${ticket.rating}
+</p>
+
+<hr>
+
+<pre>
+${ticket.notes}
+</pre>
+
+<button onclick="history.back()">
+⬅ Back
+</button>
+`;
+
+});
 
 </script>
 
 </body>
-
 </html>
