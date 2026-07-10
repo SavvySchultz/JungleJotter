@@ -3,108 +3,113 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <title>Jungle Jotter Pro</title>
+<title>Jungle Jotter Pro</title>
 
-    <link
-        rel="stylesheet"
-        href="styles.css">
+<link
+rel="stylesheet"
+href="styles.css">
 
 </head>
 
 <body>
 
-    <header>
+<header>
 
-        <h1>🌴 Jungle Jotter Pro</h1>
+<h1>🌴 Jungle Jotter Pro</h1>
 
-        <p>
-            IT Knowledge Management System
-        </p>
+<p>IT Knowledge Management System</p>
 
-    </header>
+</header>
 
-    <nav>
+<nav>
 
-        <a href="index.html">
-            Add Discovery
-        </a>
+index.html">
+🌿 New Discovery
+</a>
 
-        <a href="knowledge.html">
-            Knowledge Base
-        </a>
+<a href="knowledge.html">
+📚 Knowledge Base
+</a>
 
-        <a href="dashboard.html">
-            Dashboard
-        </a>
+dashboard.html">
+📊 Dashboard
+</a>
 
-    </nav>
+</nav>
 
-    <div class="container">
+<div class="container">
 
-        <div class="card">
+<div class="card">
 
-            <h2>
-                New Discovery
-            </h2>
+<h2>Create Discovery</h2>
 
-            <input
-                id="title"
-                placeholder="Issue Title">
+<input
+id="title"
+placeholder="Issue Title">
 
-            <select id="category">
+<select id="category">
 
-                <option>Microsoft 365</option>
-                <option>Outlook</option>
-                <option>Teams</option>
-                <option>OneDrive</option>
-                <option>SharePoint</option>
-                <option>Active Directory</option>
-                <option>VPN</option>
-                <option>Network</option>
-                <option>Security</option>
-                <option>Printer</option>
-                <option>Hardware</option>
-                <option>Software</option>
-                <option>Other</option>
+<option>Microsoft 365</option>
+<option>Outlook</option>
+<option>Teams</option>
+<option>OneDrive</option>
+<option>SharePoint</option>
+<option>Active Directory</option>
+<option>VPN</option>
+<option>Network</option>
+<option>Printer</option>
+<option>Security</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Other</option>
 
-            </select>
+</select>
 
-            <input
-                id="tags"
-                placeholder="Tags">
+<input
+id="tags"
+placeholder="Optional Tags">
 
-            <textarea
-                id="notes"
-                rows="12"
-                placeholder="Paste ticket notes here"></textarea>
+<textarea
+id="notes"
+rows="12"
+placeholder="Paste technician notes here"></textarea>
 
-            <div class="button-row">
+<input
+type="file"
+id="ticketFile"
+accept=".txt">
 
-                <button onclick="smartClean()">
-                    🤖 Smart AI Clean
-                </button>
+<div class="button-row">
 
-                <button onclick="undoSmartClean()">
-                    ↩ Undo
-                </button>
+<button onclick="loadFile()">
+📄 Load File
+</button>
 
-                <button onclick="saveDiscovery()">
-                    🌿 Save Discovery
-                </button>
+<button onclick="smartClean()">
+🤖 Smart AI Clean
+</button>
 
-            </div>
+<button onclick="undoSmartClean()">
+↩ Undo
+</button>
 
-        </div>
+<button onclick="saveDiscovery()">
+🌿 Save Discovery
+</button>
 
-    </div>
+</div>
 
-    app.js"></script>
+</div>
+
+</div>
+
+<script src="app.js"></script>
 
 </body>
 
