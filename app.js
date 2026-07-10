@@ -1,49 +1,58 @@
 /* =====================================
-   JUNGLE JOTTER
+   JUNGLE JOTTER PRO
 ===================================== */
 
 let discoveries =
     JSON.parse(
-        localStorage.getItem("discoveries")
+        localStorage.getItem(
+            "discoveries"
+        )
     ) || [];
 
 let originalNotes = "";
 
 /* =====================================
-   SMART CLEAN
+   SMART AI CLEAN
 ===================================== */
 
-function cleanNotes() {
+function smartClean() {
 
     const notesBox =
         document.getElementById("notes");
 
     if (!notesBox) return;
 
-    const notes =
+    const raw =
         notesBox.value.trim();
 
-    if (!notes) {
-        alert("Enter notes first");
+    if (!raw) {
+
+        alert(
+            "Enter notes first."
+        );
+
         return;
     }
 
-    originalNotes = notes;
+    originalNotes = raw;
 
-    const lines =
-        notes
-            .split(/\n+/)
-            .filter(line => line.trim());
+    let lines =
+        raw.split(/\n+/)
+            .map(x => x.trim())
+            .filter(Boolean);
 
-    let issueSummary =
-        lines[0] || "";
+    let summary =
+        lines[0] || "Issue Reported";
 
     let troubleshooting = [];
+
     let resolution = [];
+
+    let verification = [];
 
     lines.forEach(line => {
 
-        let lower =
+        const lower =
             line.toLowerCase();
 
         if (
@@ -52,13 +61,27 @@ function cleanNotes() {
             lower.includes("working") ||
             lower.includes("reset") ||
             lower.includes("enabled") ||
-            lower.includes("removed") ||
-            lower.includes("installed")
+            lower.includes("reinstalled") ||
+            lower.includes("repair")
         ) {
+
             resolution.push(line);
+
         }
+
+        else if (
+            lower.includes("confirmed") ||
+            lower.includes("verified")
+        ) {
+
+            verification.push(line);
+
+        }
+
         else {
+
             troubleshooting.push(line);
+
         }
 
     });
@@ -68,13 +91,17 @@ function cleanNotes() {
 `Issue Investigation
 
 Issue Summary:
-${issueSummary}
+${summary}
+
+Symptoms:
+User reported issue related to:
+${summary}
 
 Troubleshooting Steps:
 
 ${troubleshooting.map(
-    (step,index)=>
-    `${index+1}. ${step}`
+(index, counter) =>
+`${counter + 1}. ${index}`
 ).join("\n")}
 
 Resolution:
@@ -85,14 +112,19 @@ ${resolution.length
 }
 
 Verification:
-✅ Tested successfully
-✅ User confirmed functionality
+
+${verification.length
+? verification.join("\n")
+: "User confirmed functionality."
+}
 
 Suggested Checks:
-• Verify permissions
-• Verify MFA
-• Check account lockouts
+
 • Review logs
+• Validate permissions
+• Validate MFA
+• Verify licensing
+• Check account status
 `;
 }
 
@@ -100,16 +132,53 @@ Suggested Checks:
    UNDO
 ===================================== */
 
-function undoCleanNotes() {
+function undoSmartClean() {
 
     const notesBox =
         document.getElementById("notes");
 
-    if(notesBox){
-
+    if (
+        notesBox &&
+        originalNotes
+    ) {
         notesBox.value =
             originalNotes;
     }
+}
+
+/* =====================================
+   AUTO TAGS
+===================================== */
+
+function generateTags(text) {
+
+    let tags = [];
+
+    let lower =
+        text.toLowerCase();
+
+    if (lower.includes("outlook"))
+        tags.push("Outlook");
+
+    if (lower.includes("teams"))
+        tags.push("Teams");
+
+    if (lower.includes("vpn"))
+        tags.push("VPN");
+
+    if (lower.includes("mfa"))
+        tags.push("MFA");
+
+    if (lower.includes("password"))
+        tags.push("Password");
+
+    if (lower.includes("sharepoint"))
+        tags.push("SharePoint");
+
+    if (lower.includes("onedrive"))
+        tags.push("OneDrive");
+
+    return tags.join(",");
 }
 
 /* =====================================
@@ -119,53 +188,89 @@ function undoCleanNotes() {
 function saveDiscovery() {
 
     const title =
-        document.getElementById("title").value.trim();
+        document.getElementById("title")
+        .value.trim();
 
     const category =
-        document.getElementById("category").value;
+        document.getElementById(
+            "category"
+        ).value;
 
-    const tags =
-        document.getElementById("tags").value.trim();
+    let tags =
+        document.getElementById(
+            "tags"
+        ).value.trim();
 
     const notes =
-        document.getElementById("notes").value.trim();
+        document.getElementById(
+            "notes"
+        ).value.trim();
 
-    if(!title || !notes){
+    if (
+        !title ||
+        !notes
+    ) {
 
         alert(
-            "Title and Notes are required."
+            "Title and notes are required."
         );
 
         return;
     }
 
-    const newDiscovery = {
+    const duplicate =
+        discoveries.find(
+            x =>
+            x.title.toLowerCase()
+            === title.toLowerCase()
+        );
+
+    if (duplicate) {
+
+        alert(
+            "A similar discovery already exists."
+        );
+
+        return;
+    }
+
+    if (!tags) {
+
+        tags =
+            generateTags(notes);
+    }
+
+    const record = {
 
         id: Date.now(),
 
-        title: title,
-
-        category: category,
-
-        tags: tags,
-
-        notes: notes,
+        favorite: false,
 
         rating: 0,
 
-        date:
+        title,
+
+        category,
+
+        tags,
+
+        notes,
+
+        created:
             new Date()
-            .toLocaleDateString()
+            .toLocaleString()
 
     };
 
     discoveries.push(
-        newDiscovery
+        record
     );
 
     localStorage.setItem(
         "discoveries",
-        JSON.stringify(discoveries)
+        JSON.stringify(
+            discoveries
+        )
     );
 
     alert(
@@ -186,71 +291,24 @@ function saveDiscovery() {
 }
 
 /* =====================================
-   KNOWLEDGE SEARCH
+   LOAD PAGE
 ===================================== */
 
-function searchKnowledge() {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const searchBox =
-        document.getElementById(
-            "search"
-        );
-
-    const filterBox =
-        document.getElementById(
-            "filter"
-        );
-
-    const search =
-        searchBox
-        ? searchBox.value.toLowerCase()
-        : "";
-
-    const category =
-        filterBox
-        ? filterBox.value
-        : "";
-
-    const filtered =
-        discoveries.filter(item => {
-
-            const text =
-                (
-                    item.title +
-                    " " +
-                    item.notes +
-                    " " +
-                    item.tags +
-                    " " +
-                    item.category
+        discoveries =
+            JSON.parse(
+                localStorage.getItem(
+                    "discoveries"
                 )
-                .toLowerCase();
+            ) || [];
 
-            const matchSearch =
-                text.includes(search);
-
-            const matchCategory =
-                category === "" ||
-                item.category === category;
-
-            return (
-                matchSearch &&
-                matchCategory
-            );
-        });
-
-    displayKnowledge(
-        filtered
-    );
-}
-
-/* =====================================
-   DISPLAY KNOWLEDGE
-===================================== */
-
-function displayKnowledge(data) {
-
-    const area =
-        document.getElementById(
-
+        console.log(
+            "Discoveries Loaded:",
+            discoveries.length
+        );
+    }
+);
 
