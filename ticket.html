@@ -21,19 +21,23 @@ href="styles.css">
 
 <header>
 
-<h1>
-🎫 Discovery Details
+<h1 id="ticketTitle">
+Ticket Details
 </h1>
+
+<p>
+Discovery Details
+</p>
 
 </header>
 
 <nav>
 
-.html">
+<a href="index.html">
 🌿 New Discovery
 </a>
 
-">
+<a href="knowledge.html">
 📚 Knowledge Base
 </a>
 
@@ -47,13 +51,21 @@ href="styles.css">
 
 <div class="card">
 
-<h2 id="ticketTitle">
-Loading...
-</h2>
-
-<div id="ticketContent">
+<div id="ticketDetails">
 
 </div>
+
+<br>
+
+<button
+onclick="copyNotes()">
+📋 Copy Notes
+</button>
+
+<button
+onclick="window.location.href='knowledge.html'">
+⬅ Back
+</button>
 
 </div>
 
@@ -61,11 +73,13 @@ Loading...
 
 <script>
 
+let ticket = null;
+
 document.addEventListener(
 "DOMContentLoaded",
 ()=>{
 
-const ticket =
+ticket =
 JSON.parse(
 localStorage.getItem(
 "selectedTicket"
@@ -75,10 +89,10 @@ localStorage.getItem(
 if(!ticket){
 
 document.getElementById(
-"ticketContent"
+"ticketDetails"
 ).innerHTML =
 
-"<h3>No Ticket Found</h3>";
+"<h2>No Ticket Found</h2>";
 
 return;
 }
@@ -89,10 +103,16 @@ document.getElementById(
 ticket.title;
 
 document.getElementById(
-"ticketContent"
+"ticketDetails"
 ).innerHTML =
 
 `
+<h2>
+${ticket.title}
+</h2>
+
+<hr>
+
 <p>
 <strong>Category:</strong>
 ${ticket.category}
@@ -115,16 +135,31 @@ ${ticket.rating}
 
 <hr>
 
+<h3>
+Resolution Notes
+</h3>
+
 <pre>
 ${ticket.notes}
 </pre>
-
-<button onclick="history.back()">
-⬅ Back
-</button>
 `;
 
 });
+
+function copyNotes(){
+
+if(!ticket) return;
+
+navigator.clipboard
+.writeText(
+ticket.notes
+);
+
+alert(
+"Notes copied."
+);
+
+}
 
 </script>
 
