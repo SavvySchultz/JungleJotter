@@ -3,17 +3,17 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <title>Knowledge Base</title>
+<title>Knowledge Base</title>
 
-    <link
-        rel="stylesheet"
-        href="styles.css">
+<link
+rel="stylesheet"
+href="styles.css">
 
 </head>
 
@@ -21,46 +21,77 @@
 
 <header>
 
-    <h1>📚 Knowledge Base</h1>
+<h1>📚 Knowledge Base</h1>
 
-    <p>
-        Browse discoveries and solutions
-    </p>
+<p>Stored IT Discoveries</p>
 
 </header>
 
 <nav>
 
-    index.html">
-        Add Discovery
-    </a>
+<a href="index.html">
+🌿 New Discovery
+</a>
 
-    <a href="knowledge.html">
-        Knowledge Base
-    </a>
+<a href="knowledge.html">
+📚 Knowledge Base
+</a>
 
-    <a href="dashboard.html">
-        Dashboard
-    </a>
+<a href="dashboard.html">
+📊 Dashboard
+</a>
 
 </nav>
 
 <div class="container">
 
-    <div class="card">
+<div class="card">
 
-        <input
-            id="search"
-            placeholder="Search discoveries..."
-            onkeyup="searchKnowledge()">
+<input
+id="search"
+placeholder="Search discoveries..."
+onkeyup="searchKnowledge()">
 
-        <select
-            id="filter"
-            onchange="searchKnowledge()">
+<select
+id="filter"
+onchange="searchKnowledge()">
 
-            <option value="">
-                All Categories
-            </option>
+<option value="">
+All Categories
+</option>
 
-            <option>Microsoft 365</option>
+<option>Microsoft 365</option>
+<option>Outlook</option>
+<option>Teams</option>
+<option>OneDrive</option>
+<option>SharePoint</option>
+<option>Active Directory</option>
+<option>VPN</option>
+<option>Network</option>
+<option>Printer</option>
+<option>Security</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Other</option>
 
+</select>
+
+</div>
+
+<div id="results"></div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+document.addEventListener(
+"DOMContentLoaded",
+loadKnowledgeBase
+);
+
+</script>
+
+</body>
+</html>
