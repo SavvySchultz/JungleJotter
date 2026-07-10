@@ -1,55 +1,40 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta charset="UTF-8">
-
-<title>Ticket Details</title>
-
-<link rel="stylesheet"
-href="styles.css">
-
+<title>Ticket</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body onload="loadTicket()">
+<body>
 
 <header>
-
-<h1>🎟 Ticket Details</h1>
-
+<h1 id="ticketTitle">Ticket</h1>
 </header>
 
 <nav>
-
 <a href="index.html">Add Discovery</a>
-
 <a href="knowledge.html">Knowledge Base</a>
-
 <a href="dashboard.html">Dashboard</a>
-
 </nav>
 
 <div class="container">
 
 <div class="card">
 
-<h2 id="ticketTitle"></h2>
-
 <div id="ticketDetails"></div>
 
 <hr>
 
-<h3>Related Tickets</h3>
+<h2>Related Tickets</h2>
 
-<ul id="relatedTickets"></ul>
-
-</div>
+<div id="relatedTickets"></div>
 
 </div>
 
-"></script>
+</div>
+
+<script src="app.js"></script>
 
 </body>
-
 </html>
